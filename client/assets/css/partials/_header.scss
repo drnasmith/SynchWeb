@@ -3,8 +3,9 @@
 
 #header {
     //background: $header-background url(/templates/images/diamond_gs_small.png) top center no-repeat;
-    background: $header-background inline-image('diamond_gs_small.png') top center no-repeat;
-    
+    //background: $header-background inline-image('diamond_gs_small.png') top center no-repeat;
+    background: $header-background inline-image('bnlLogo-template-100px_small.png') top center no-repeat;
+
     color: $header-color;
 
     h1 {
