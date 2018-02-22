@@ -11,14 +11,14 @@
     $mode = 'dev';
 
     # Database credentials, db = hostname/database
-    $isb  = array('user' => 'ispyb', 'pass' => 'integration', 'db' => 'localhost/ispyb');
+    $isb  = array('user' => 'ispyb_web', 'pass' => 'alunisthenewbill', 'db' => 'ispyb-db-dev/ispyb');
     $dbtype = 'mysql';
 
 
     # Encoded JWT key, used to sign and check validaty of jwt tokens
     # - Create one of these using /api/authentication/key
     #   This can be changed to invalidate all currently active tokens
-    $jwt_key = 'EKTaeqVnhAaxBTPHbDhT5EZDN0HHlnzvUzD30X4QTAKrcBmewiAB90/A55LNxE+u0xcjJDWLRSgBjKwjE4lI7g==';
+    $jwt_key = 'W1dhGHbCzOnjU2svojybAWBi7Ea2QS+IXF2ynSbHQekDxpHxL0kdHjWuUfdBbeUNMtDWZtBOKeTlACHIeFclIw==';
 
 
     # Auth type
@@ -31,17 +31,15 @@
     $cas_url = 'cas.server.ac.uk';
 
     # Follow CAS SSO
-    $cas_sso = false;
+    $cas_sso = true;
 
     # CAS CA Cert (for SSO)
     $cacert = '/etc/certs/ca-bundle.crt';
 
 
     # ldap server, used for lookup and authentication (if using)
-    #$ldap_server = 'altfed.cclrc.ac.uk';
-    #$ldap_search = 'dc=fed,dc=cclrc,dc=ac,dc=uk';
-    $ldap_server = '192.168.30.200';
-    $ldap_search = 'ou=people,dc=example,dc=com';
+    $ldap_server = 'ldaps://ldap';
+    $ldap_search = 'ou=people,dc=nsls2,dc=bnl,dc=gov';
 
     # Upload directory
     # - used for user image uploads
@@ -100,7 +98,7 @@
     #   For diffraction images, snapshots, and thumbnails
 
     # Visit directory on disk
-    $visit_directory = '/dls/<%=BEAMLINENAME%>/data/<%=YEAR%>/<%=VISIT%>';
+    $visit_directory = '/nsls2/<%=BEAMLINENAME%>/data/<%=YEAR%>/<%=VISIT%>';
 
     # Diffraction image snapshots
     $jpeg_location = '<%=VISITDIR%>/jpegs/<%=DIR%>/<%=FILE%>.jpeg';
@@ -124,11 +122,11 @@
     # and for RED experiments
     $cl3_email = 'cl3team@server.ac.uk, goods@server.ac.uk';
 
-    # and for shipment booked,
+    # and for shipment booked, 
     $shipbooked_email = 'goods@server.ac.uk';
 
     # Industrial Contacts
-    # - Industrial users get a personalised email with in contact details,
+    # - Industrial users get a personalised email with in contact details, 
     #   template in assets/emails/dewar-stores-in-in.html
     $in_contacts = array('Ind Contact' => 'in@server.ac.uk'
                         );
@@ -145,13 +143,13 @@
     #   x.x.103.x => i03
     $ip2bl = array(103 => 'i03',
                    );
-
+    
     # Barcode readers
     # - These clients use the android app (unauthenticated)
     $bcr = array('1.2.3.4', # my android device
                  );
-
-
+  
+    
 
     # Facility Name for statuses, emails, etc
     # - Used throughout the app for labels
@@ -189,8 +187,8 @@
     // N = Domestic Express, P = Worldwide Express
     $dhl_service = 'N';
 
-
-    # VMXi
+  
+    # VMXi 
     $vmxi_user = 'vmxi';
     $vmxi_pass = 'pass';
     $uas_url = 'http://path.to.uas';
@@ -198,8 +196,8 @@
     # Risk statements
     $sample_hazard = 'Samples will be handled following the beamline risk assessment';
     $exp_hazard = 'VMXi will be operated following the beamline risk assessment';
-
-
+    
+  
     # Proposal codes to list
     $prop_codes = array('lb', 'cm', 'mx', 'nt', 'nr', 'sw', 'in', 'mt', 'ee', 'em', 'sm');
 
@@ -207,15 +205,15 @@
     # These map proposal types to their proposalcode
     # - If these are not defined for a proposal type, the api then uses bl_types below
     $prop_types = array('mx', 'em');
-
+    
     # This maps beamlinename in blsession to a proposal type
     # - Internal maps a beamline to an api "type", there are currently:
     #     mx, gen, em
-    $bl_types = array('mx' => array('i02', 'i03', 'i04'),
+    $bl_types = array('mx' => array('i02', 'i03', 'i04', 'AMX'),
                       'gen' => array('i11'),
                       );
-
-
+    
+    
     # Webcam IPs
     # - These are show on the beamline status and active datacollection lists
     $webcams = array('i03' => array('1.2.3.4'),
