@@ -1,0 +1,14 @@
+<div id="my-vue-template" class="content">
+    <h1>Notebook (Vue.js Page)</h1>
+
+    <p>Proposal: {{proposal}}</p>
+
+    <p>Message: {{msg}}</p>
+    <input v-model="msg" type="text"/>
+    
+    <button id="show_sessions" v-on:click="toggleSessions">Toggle Sessions</button>
+
+    <div v-show="show_sessions">
+        <session-list proposal="cm1234"></session-list>
+    </div>
+</div>
