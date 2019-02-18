@@ -213,6 +213,7 @@ function(Backbone, Marionette, _, $, HeaderView, SideBarView, DialogRegion, Logi
         'modules/mc/router',
         'modules/admin/router',
         'modules/imaging/router',
+        'modules/notebook/router',
         ], function() {
             
         this.sidebarview = new SideBarView()
