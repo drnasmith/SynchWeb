@@ -2,9 +2,10 @@
     <h1>Notebook (Vue.js Page)</h1>
 
     <p>Proposal: {{proposal}}</p>
+    <p>Change the input text to edit the message</p>
 
-    <p>Message: {{msg}}</p>
     <input v-model="msg" type="text"/>
+    <p>Message: {{msg}}</p>
     
     <button id="show_sessions" v-on:click="toggleSessions">Toggle Sessions</button>
 
