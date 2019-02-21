@@ -54,6 +54,7 @@ require.config({
     'highmaps-world': 'vendor/highmaps/world',
 
     vue: 'vendor/vue/vue.min',
+    'vee-validate': 'vendor/vue/vee-validate',
   },
     
   shim: {
