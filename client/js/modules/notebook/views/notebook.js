@@ -1,4 +1,4 @@
-define(['utils/vuewrapper',
+define(['utils/marionette_vuewrapper',
         'vue',
         'modules/notebook/views/sessions',
         'text!templates/notebook/notebook.html',
