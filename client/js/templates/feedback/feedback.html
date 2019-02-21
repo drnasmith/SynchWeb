@@ -1,31 +1,38 @@
-    <h1>Send Feedback</h1>
+<div id="my-vue-template" class="content">
 
+    <h1>Send Feedback (Vue)</h1>
+    
     <p class="help">This page is for sending feedback about the ISPyB web interface to the developers, not for your beamtime! Please use UAS to report feedback for your visits</p>
-
-    <form>
-
+    
+    <!-- Use our own customr validation-->
+    <form novalidate="true" v-bind:class="{'loading' : isLoading}">
+    
     <div class="form">
         <ul>
-
+    
             <li>
                 <label>Your Name</label>
-                <input type="text" name="name" />
+                <input v-validate="'required'" v-bind:class="[errors.has('name') ? 'ferror' : 'fvalid']" type="text" v-model="name" name="name"/>
+                <span v-show="errors.has('name')" class="ferror">{{ errors.first('name') }}</span>
             </li>
-
+    
             <li>
                 <label>Your Email Address</label>
-                <input name="email" type="email" />
+                <input v-validate="'required|email'" v-bind:class="[errors.has('email') ? 'ferror' : 'fvalid']" name="email" v-model="email" type="email"/>
+                <span v-show="errors.has('email')"  class="ferror">{{ errors.first('email') }}</span>
             </li>
-
+    
             <li>
                 <label>Feedback</label>
-                <textarea name="feedback"></textarea>
+                <textarea v-validate="'required'" v-bind:class="[errors.has('feedback') ? 'ferror' : 'fvalid']" v-model="feedback" name="feedback"></textarea>
+                <span v-show="errors.has('feedback')" class="ferror">{{ errors.first('feedback') }}</span>
             </li>
-
+    
         </ul>
-
-        <button name="submit" value="1" type="submit" class="submit">Send Feedback</button>
-
+    
+        <button v-on:click="onSubmit" name="submit" value="1" type="submit" class="submit">Send Feedback</button>
     </div>
-
+    
     </form>
+    
+    </div>
