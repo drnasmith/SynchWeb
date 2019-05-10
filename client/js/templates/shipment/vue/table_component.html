@@ -1,0 +1,15 @@
+<!-- Pass in headers and data as props-->
+<div class="content">
+    <div class="tbl bg table">
+        <table>
+            <thead>
+                <th v-for="h in headers" class="sortable renderable">{{h.title}}</th>
+            </thead>
+            <tbody>
+                <tr v-for="(row, index) in data" v-on:click="$emit('row-clicked', row)">
+                    <td v-for="h in headers" class="sortable renderable">{{row.get(h.key)}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

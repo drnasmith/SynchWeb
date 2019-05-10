@@ -3,6 +3,7 @@ define([], function() {
     return {
         menu: {
             dc: 'View All Data',
+            vueregdewars: 'Registered Dewars (Vue)',
             visits: 'Visits',
             calendar: 'Calendar',
             assign: 'Assign Containers',

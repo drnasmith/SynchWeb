@@ -30,6 +30,7 @@ define(['utils/lazyrouter'], function(LazyRouter) {
       'containers/plan/:cid': 'plan_container',
 
       'migrate': 'migrate',
+      'vueregdewars': 'vue_dewar_list',
     },
     
     loadEvents: ['shipments:show', 'shipment:show', 'container:show', 'dewar:show']

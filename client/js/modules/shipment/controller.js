@@ -40,6 +40,7 @@ define(['marionette',
         'modules/types/xpdf/views/plan',
 
         'modules/shipment/views/migrate',
+        'modules/shipment/views/vue/registered_dewars',
 
         'models/proplookup',
     
@@ -51,7 +52,7 @@ define(['marionette',
     ContainerRegistry, ContainersRegistry, ContainerRegistryView, RegisteredContainer,
     RegisteredDewar, DewarRegistry, DewarRegView, RegDewarView, RegDewarAddView,
     DispatchView, TransferView, Dewars, DewarOverview, ManifestView, DewarStats, CreateAWBView, RebookPickupView,
-    PlanView, MigrateView,
+    PlanView, MigrateView, VueRegisteredDewars,
     ProposalLookup) {
     
     var bc = { title: 'Shipments', url: '/shipments' }
@@ -319,7 +320,19 @@ define(['marionette',
       })
     },
 
-
+    vue_dewar_list: function(s, page) {
+        console.log('Vue dewer list')
+        app.loading()
+        var dewars = new DewarRegistry()
+          
+        dewars.state.currentPage = page ? parseInt(page) : 1
+        dewars.fetch().done(function() {
+          app.bc.reset([bc, { title: 'Registered Dewars', url: '/dewars' }])
+          app.content.show(new VueRegisteredDewars({ collection: dewars, params: { s: s } }))
+        })
+      },
+  
+  
     view_dewar: function(fc) {
       app.log('cont view')
       var dewar = new RegisteredDewar({ FACILITYCODE: fc })
