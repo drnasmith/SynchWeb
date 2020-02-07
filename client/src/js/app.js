@@ -219,6 +219,7 @@ function(Backbone, Marionette, _, $, HeaderView, SideBarView, DialogRegion, Logi
         'modules/imaging/router',
         'modules/types/em/relion/router',
         'modules/types/em/scipion/router',
+        'modules/vue/router',
     ], function() {
             
         this.sidebarview = new SideBarView()
