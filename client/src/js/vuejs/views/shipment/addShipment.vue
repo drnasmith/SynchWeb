@@ -1,0 +1,159 @@
+<template>
+    <section id="vue-add-shipment" class="content tw-container tw-mx-auto">
+        <div class="terms"></div>
+
+        <h1>Add New Shipment</h1>
+
+        <form method="post" id="add_shipment">
+            
+            <div class="form">
+                <ul>
+                    
+                    <li>
+                        <label>Name
+                            <span class="small">Name for the shipment</span>
+                        </label>
+                        <input type="text" name="SHIPPINGNAME" />
+                    </li>
+                    
+                    <li>
+                        <label>Number of Dewars
+                            <span class="small">Number of dewars to automatically create for this shipment</span>
+                        </label>
+                        <input type="text" name="DEWARS" value="1" />
+                    </li>
+                    
+                    <li class="d clearfix">
+                        <label>Facility Dewar Codes
+                            <span class="small">Unique code for each dewar of the shipment.<br />No facility codes listed? Make sure they are <a href="/dewars">Registered</a> or <a href="/migrate">Migrated</a> from an old proposal</span>
+                        </label>
+                        <div class="floated">
+                            <!--<span class="fcodes"></span>-->
+                        </div>
+                    </li>
+                    
+                    <li>
+                        <label>First Experiment
+                            <span class="small">First experiment for the dewars in this shipment</span>
+                        </label>
+                        <select name="FIRSTEXPERIMENTID"></select> <label class="secondary"><input type="checkbox" name="noexp"> None - Automated / Imager</label>
+                    </li>
+
+                    <li>
+                        <label>Safety Level
+                            <span class="small">The safety level of the shipment</span>
+                        </label>
+                        <select name="SAFETYLEVEL" required>
+                            <option value="Green">Green</option>
+                            <option value="Yellow">Yellow</option>
+                            <option value="Red">Red</option>
+                        </select>
+                    </li>
+                    
+                    <li>
+                        <label>Comments
+                            <span class="small">Comment for the shipment</span>
+                        </label>
+                        <textarea name="COMMENT"></textarea>
+                    </li>
+                    
+                    <li>
+                        <label>Outgoing Lab Contact
+                            <span class="small">Lab contact for outgoing transport | <a class="add_lc" href="/contacts/add">Add</a></span>
+                        </label>
+                        <select name="SENDINGLABCONTACTID"></select>
+                    </li>
+                    
+                    <li>
+                        <label>Return Lab Contact
+                            <span class="small">Lab contact for return transport | <a class="add_lc" href="/contacts/add">Add</a></span>
+                        </label>
+                        <select name="RETURNLABCONTACTID"></select>
+                    </li>
+                    
+                    <li>
+                        <label>Shipping Date
+                            <span class="small">Date shipment will leave lab / be picked up</span>
+                        </label>
+                        <input class="half" type="text" name="DELIVERYAGENT_SHIPPINGDATE" />
+                    </li>
+
+                    <li>
+                        <label>Pickup Location
+                            <span class="small">Location where shipment can be picked up from. i.e. Reception</span>
+                        </label>
+                        <input class="half" type="text" name="PHYSICALLOCATION" />
+                    </li>
+
+                    <li>
+                        <label>Ready by Time
+                            <span class="small">Time shipment will be ready for pickup</span>
+                        </label>
+                        <input class="half" type="text" name="READYBYTIME" />
+                    </li>
+
+                    <li>
+                        <label>Close Time
+                            <span class="small">Time after which shipment cannot be picked up</span>
+                        </label>
+                        <input class="half" type="text" name="CLOSETIME" />
+                    </li>
+                    
+                    
+                    <li>
+                        <label>Delivery Date
+                            <span class="small">Estimated date of delivery at facility</span>
+                        </label>
+                        <input class="half" type="text" name="DELIVERYAGENT_DELIVERYDATE" />
+                    </li>
+                    
+                    <li>
+                        <label>Courier Name
+                            <span class="small">Courier name for the return shipment</span>
+                        </label>
+                        <input type="text" name="DELIVERYAGENT_AGENTNAME" /> 
+                        <a v-if="!DHL_ENABLE" href="DHL_LINK" class="dhl button"><i class="fa fa-envelope"></i> Use Facility Account (UK ONLY)</a>
+                    </li>
+                    
+                    <li>
+                        <label>Courier Account Number
+                            <span class="small">Courier account number for return shipment</span>
+                        </label>
+                        <input type="text" name="DELIVERYAGENT_AGENTCODE" />
+                    </li>
+                    
+                    <button name="submit" value="1" type="submit" class="button submit">Add Shipment</button>
+                    
+                    
+                </ul>
+            </div>
+            
+        </form>
+
+
+    </section>
+</template>
+
+<script>
+export default {
+    name: 'AddShipment',
+    data: function() {
+        return {
+            shipmentName: '',
+            DHL_ENABLE: false,
+            DHL_LINK: '/dhl'
+        }
+    },
+    created: function() {
+        console.log("Add Shipment Component")
+    },
+    methods: {
+        onCancel: function() {
+            this.$emit('navigate', '')
+        },
+        onSubmit: function() {
+            console.log("Submit..")
+        }
+    }
+}
+</script>

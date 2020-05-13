@@ -1,14 +1,34 @@
-var Styles = require('main.scss')
+var Styles = require('./css/main.css')
 var FontAwesome = require('font-awesome/css/font-awesome.css')
-const config = require('./js/config.json')
-
-// With Webpack we use the maintenance flag in config.json
-// to modify the main index page. Checking the flag here prevents the
-// main js bundle from loading resources we don't need.
-require(['app'], function(app) {
-    "use strict"
-    if ( !config.maintenance ) {
-      app.start()
-    }
-  })
   
+import Vue from 'vue'
+import Vuelidate from 'vuelidate'
+
+import App from './js/vuejs/App.vue'
+import router from './router'
+import store from './store'
+
+import MarionetteApp from './js/vuejs/views/marionette/singleton.js'
+
+
+Vue.config.productionTip = false
+
+Vue.use(Vuelidate)
+
+const vm = new Vue({
+  router,
+  store,
+  render: h => h(App),
+  created: function() {
+    console.log("Vue INSTANCE CREATED")
+
+    this.initMarionette()
+  },
+  methods: {
+    initMarionette: function() {
+      let application = MarionetteApp.getInstance()
+
+      application.start()
+    },
+  }
+}).$mount('#synchweb-app')
