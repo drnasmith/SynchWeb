@@ -15,7 +15,6 @@ var MarionetteApplication = (function () {
     }
 
     function initialise(application) {
-        application.options = new Options()
         // Initialize Sync
         // let self = this
         // Allow us to set a global base url for the API
@@ -105,24 +104,24 @@ var MarionetteApplication = (function () {
             }
         }, 300))
           
-        let self = application
-        // We don't need to use marionette router anymoew
-        application.addInitializer(function(options){
-            // console.log("Marionette::addInitializer from app.js")
-            // Load options - doing this in store now
-            // application.options.fetch({
-            //     data: { t: new Date().getTime() },
-            //     success: function() {
-            //         console.log("MarionetteApplication Got Options")
-            //         self.initializeRegions()
-            //         // application.getuser()
-            //     },
-            //     error: function() {
-            //         console.log("MarionetteApplication Options not available")
-            //     }
-            // })
+        // let self = application
+        // // We don't need to use marionette router anymoew
+        // application.addInitializer(function(options){
+        //     // console.log("Marionette::addInitializer from app.js")
+        //     // Load options - doing this in store now
+        //     // application.options.fetch({
+        //     //     data: { t: new Date().getTime() },
+        //     //     success: function() {
+        //     //         console.log("MarionetteApplication Got Options")
+        //     //         self.initializeRegions()
+        //     //         // application.getuser()
+        //     //     },
+        //     //     error: function() {
+        //     //         console.log("MarionetteApplication Options not available")
+        //     //     }
+        //     // })
 
-        })
+        // })
 
         
         // Think this is redundant with Vue managing the marionette views

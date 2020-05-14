@@ -90,6 +90,7 @@ export default {
       },
     },
     created: function () {
+      console.log("APP.vue Created")
       let self = this
 
       EventBus.$on('proposalChange', function (payLoad) {
@@ -107,7 +108,9 @@ export default {
       })
 
       var menus = this.$store.getters['getMenu']
-      console.log("Menus: " + JSON.stringify(menus))
+    },
+    mounted: function () {
+      console.log("APP.vue Mounted")
     },
     methods: {
       getMenuType: function(menuType) {
@@ -133,10 +136,10 @@ export default {
             })
           }
         }
-        console.log("Computed menu for " + menuType + ", " + JSON.stringify(menu))
+        
         return menu
       }
-    }
+    },
 }
 </script>
 

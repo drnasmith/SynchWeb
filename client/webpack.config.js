@@ -22,6 +22,7 @@ module.exports = (env, argv) => ({
   },
   devServer: {
     port: (env && env.port) || 9000,
+    https: true,
     historyApiFallback: {
       index: '/dist/'+gitHash+'/index.html',
     },

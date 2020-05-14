@@ -246,20 +246,6 @@ export default {
         let url = this.$store.getters.apiRoot + '/proposal/visits'
         this.$store.commit('clear_proposal')
         EventBus.$emit('bcChange', [{title: '/', link: '/'}])
-        // Backbone.ajax({
-        //     url: url,
-        //     data: {'per_page': 15, 'page': 1, 'all': 1},
-        //     success: function(resp) {
-        //         console.log(JSON.stringify(resp.data))
-        //         self.total = resp.total
-        //         self.visits = resp.data
-        //         console.log(self.total)
-        //         console.log(self.visits)
-        //     },
-        //     error: function(err) {
-        //       console.log("Error getting visits" + err)
-        //     }
-        // })
     },
     filters: {
         truncate: function (value) {

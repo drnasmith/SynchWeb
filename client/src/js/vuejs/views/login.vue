@@ -37,12 +37,23 @@ export default {
     computed: {
         sso: function() {
             return this.$store.getters.sso
+        },
+        sso_url: function() {
+            return this.$store.getters.sso_url
         }
     },
     mounted: function() {
         console.log("Login mounted - redirect = " + this.$route.query.redirect)
 
+        if (this.sso) {
+            console.log("Redirecting to CAS")
+            // this.$router.go('https://' + this.sso_url + '?service=' + this.redirectUrl)
+        }
+
         // Are we using SSO?
+    },
+    beforeUpdate: function() {
+        console.log("Login::beforeUpdate")
     },
     methods: {
         onSubmit: function(event) {
@@ -67,6 +78,7 @@ export default {
         }
     },
     beforeRouteEnter: function(to, from, next) {
+        console.log("Login::beforeRouteEnter")
         if (to.query.redirect) {
             next(vm => {
                 if (vm.sso) console.log("LOGIN KNOWS ITS SSO")

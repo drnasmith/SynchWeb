@@ -95,6 +95,9 @@ const store = new Vuex.Store({
         state.auth.type = options.get('authentication_type')
         state.auth.cas_sso = options.get('cas_sso')
         state.auth.cas_url = options.get('cas_url')
+        // state.auth.type = options['authentication_type']
+        // state.auth.cas_sso = options['cas_sso']
+        // state.auth.cas_url = options['cas_url']  
         console.log("STORE UPDATING OPTIONS " + state.auth.cas_sso)
         console.log("STORE UPDATING OPTIONS " + state.auth.cas_url)
       },
@@ -162,49 +165,69 @@ const store = new Vuex.Store({
       },      
   },
   actions: {
-    async initialise({dispatch, commit}) {
-      if (!this.state.initialised) {
-        console.log("STORE INIITALISE")
-        this.state.initialised = true
-
-        app.apiurl = this.state.apiRoot
-        
-        // Get any stored value from sessionStorage
-        var prop = sessionStorage.getItem('prop')
-        var token = sessionStorage.getItem('token')
-  
-        if (token) {
-          console.log("Store Initialised token = " + token)
-          commit('auth_success', token)
+    check_auth({commit, dispatch}) {
+      return new Promise( (resolve) => {
+        if (store.state.initialised) {
+          resolve(store.state.token !== '')
+        } else {
+          dispatch('initialise').then(function(ok) {
+            console.log('check_auth called initialise : ' + ok)
+            resolve(store.state.token !== '')
+          })
         }
-
-        if (prop) {
-          commit('save_proposal', prop)
-        }
-        await dispatch('get_options').then(() =>{
-          console.log("GET OPTIONS HAS FINISHED")
-        })
-      }
+      })
     },
-    async get_options({commit}) {
+    initialise({dispatch, commit}) {
       return new Promise((resolve, reject) => {
+        if (!this.state.initialised) {
+          console.log("STORE INIITALISE")
+          this.state.initialised = true
+  
+          app.apiurl = this.state.apiRoot
+          
+          // Get any stored value from sessionStorage
+          var prop = sessionStorage.getItem('prop')
+          var token = sessionStorage.getItem('token')
+    
+          if (token) {
+            console.log("Store Initialised token = " + token)
+            commit('auth_success', token)
+          }
+  
+          if (prop) {
+            commit('save_proposal', prop)
+          }
+          dispatch('get_options').then(function(val) {
+            console.log("GET OPTIONS HAS FINISHED - " + val)
+            resolve(val)
+          }, function(val) {
+            console.log("GET OPTIONS HAS FAILED - " + val)
+            reject(val)
+          })
+        } else {
+          resolve(true)
+        }
+      })
+    },
+    get_options({commit}) {
         let options = new Options()
 
-        options.fetch({
-          data: { t: new Date().getTime() },
-          success: function() {
-            commit('save_options', options)
-            // Let legacy part of app have access to this model
-            app.options = options
-            resolve()
-          },
+        return new Promise((resolve, reject) => {
+          options.fetch({
+            data: { t: new Date().getTime() },
+            success: function() {
+              commit('save_options', options)
+              // Let legacy part of app have access to this model
+              app.options = options
+              resolve(true)
+            },
 
-          error: function() {
-            console.log("Error getting options - no authentication information available")
-            reject()
-          },  
-        })
-      })
+            error: function() {
+              console.log("Error getting options - no authentication information available")
+              reject(false)
+            },  
+          })
+        })      
     },
     set_proposal({commit}, prop) {
       console.log("STORE SET PROPOSAL SELECTED: " + prop)
@@ -337,6 +360,7 @@ const store = new Vuex.Store({
     },
 
     sso: state => state.auth.cas_sso,
+    sso_url: state => state.auth.cas_url,
     notifications: state => state.notifications,
   }
 })
@@ -345,8 +369,5 @@ const store = new Vuex.Store({
 let application = MarionetteApplication.getInstance()
 
 application.initStateMapping(store)
-
-// Make sure the store is initialised when its imported
-store.dispatch('initialise')
 
 export default store

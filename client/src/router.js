@@ -2,8 +2,6 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import store from './store.js'
 
-import MarionetteApp from 'vuejs/views/marionette/singleton.js'
-
 import Home from 'vuejs/views/home.vue'
 import Login from 'vuejs/views/login.vue'
 import Visits from 'vuejs/views/visits.vue'
@@ -48,6 +46,15 @@ let routes = [
     component: NoPage,
     props: route => ({url: route.query.url})
   },
+]
+
+let router = new Router({
+  mode: 'history',
+  routes: routes,
+})
+
+// Route we will move into their own files
+let asyncRoutes = [
   {
       path: '/vuevisits',
       name: 'visits',
@@ -77,13 +84,9 @@ let routes = [
     component: Feedback,
   },
 ]
+console.log("ROUTER IMPORTED")
 
-let router = new Router({
-  mode: 'history',
-  routes: routes,
-  initialised: false
-})
-
+router.addRoutes(asyncRoutes)
 router.addRoutes(ShipmentRoutes)
 router.addRoutes(ContactRoutes)
 router.addRoutes(CalendarRoutes())
@@ -91,6 +94,10 @@ router.addRoutes(LegacyRoutes())
 router.addRoutes(ProposalRoutes())
 router.addRoutes(FeedbackRoutes())
 router.addRoutes(TutorialRoutes())
+
+let application = MarionetteApplication.getInstance()
+
+application.initRouteMapping(router)
 
 var parseQuery = function(path) {
   var str = path.replace(/\?/, '').split(/&/)
@@ -108,69 +115,49 @@ var parseQuery = function(path) {
   // sessionStorage.setItem('prop', pairs.prop)
 }
   
-// Make sure the store is initialised when its imported
-store.dispatch('initialise').then(() => {
-  
-  // Everything is protected apart from / and /login
-  router.beforeEach((to, from, next) => {
-    console.log("router.beforeEach to: " + to.path + ", from: " + from.path)
-    console.log("router.beforeEach to.redirect: " + to.query.redirect)
-    console.log("router query params... " + JSON.stringify(to.query))
-  
-    if (to.query['ticket'] && store.state.sso) {
-      // Redirecting from CAS login...
-      console.log("Redirecting from CAS Login for Single Sign on")
-  
-    }
-  
-    if (to.matched.length === 0) {
-      console.log("Page Not Found " + to.fullPath)
-      var url = '/nopage?url=' + to.path
-      next(url)
-    }
-  
-    // Check if we should extract proposal from url
-    var prop = parseQuery(to.path)
-  
-    if (prop) {
-      store.commit('save_proposal', prop)
-    }
-  
-    store.dispatch('log', to.path)
-  
-    // Are we authenticated
-    if ( ! store.state.token ) {
-      // If we are on the main page or a login page that's ok 
+router.beforeEach((to, from, next) => {
+  if (to.matched.length === 0) next('nopage?url='+to.fullPath)
+
+  console.log("router.beforeEach to: " + to.path + ", from: " + from.path + ", redirect: " + to.query.redirect)
+  console.log("router query params... " + JSON.stringify(to.query))
+
+  store.dispatch('check_auth').then(function(authenticated) {
+    if (!authenticated) {
+      console.log("Router thinks we are not authenticated for path " + to.path)
+    
       if (to.path === '/' || to.path === '/login') {
         console.log("router.beforeEach normal navigation to login")
         next()
       } else {
         console.log('router.beforeEach redirecting to login to: ' + to.path + ', from: ' + from.path)
-        // next({
-        //   path: '/login',
-        //   query: { redirect: to.fullPath }
-        // })  
-        next()
+        next({
+          path: '/login',
+          query: { redirect: to.fullPath }
+        })  
       }
     } else {
-      console.log("router.beforeEach user already logged in")
-      next()
+      // We have a token although it may be out of date...?
+      if (to.query['ticket']) {
+        // Redirecting from CAS login...
+        console.log("Redirecting from CAS Login for Single Sign on")
+    
+        next(to.fullPath)
+    
+      } else {
+        // Check if we should extract proposal from url
+        var prop = parseQuery(to.path)
+      
+        if (prop) {
+          store.commit('save_proposal', prop)
+        }
+      
+        store.dispatch('log', to.path)
+      
+        console.log("router.beforeEach user already logged in")
+        next()
+      }  
     }
   })
-  
-  router.afterEach((to, from) => {
-    // If we have been redirected to the login page, go back to the referrer
-    if (to.path === '/login' && from.path !== '/') {
-      console.log("Router.afterEach login redirect...")
-    }
-  })
-  
-  let application = MarionetteApplication.getInstance()
-  
-  application.initRouteMapping(router)
-
 })
-
-
 
 export default router
