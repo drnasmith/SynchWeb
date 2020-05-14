@@ -244,7 +244,7 @@ export default {
         let self = this
         // Get visits for this user
         let url = this.$store.getters.apiRoot + '/proposal/visits'
-        this.$store.commit('clear_proposal')
+        this.$store.commit('save_proposal', null)
         EventBus.$emit('bcChange', [{title: '/', link: '/'}])
     },
     filters: {

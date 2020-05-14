@@ -46,25 +46,23 @@ const store = new Vuex.Store({
     // Proposal and visit information
     //
       save_proposal(state, prop) {
-        state.proposal = prop
-        sessionStorage.setItem('prop', prop)
-        // Legacy app
-        app.prop = state.proposal
-      },
-      clear_proposal(state) {
-        state.proposal = ''
-        sessionStorage.removeItem('prop')
+        if (prop) {
+          state.proposal = prop
+          sessionStorage.setItem('prop', prop)  
+        } else {
+          state.proposal = ''
+          sessionStorage.removeItem('prop')
+
+          // Reset the proposal Type as well
+          state.proposalType = state.user.defaultType ? state.user.defaultType : null
+          app.type = state.proposalType
+        }
         // Legacy app
         app.prop = state.proposal
       },
       save_proposal_type(state, proposalType) {
         // Save type, default to user type if null passed
         state.proposalType = proposalType ? proposalType : state.user.defaultType
-        app.type = state.proposalType
-      },
-      clear_proposal_type(state) {
-        // Save type, default to user type if null passed
-        state.proposalType = state.user.defaultType ? state.user.defaultType : 'mx'
         app.type = state.proposalType
       },
       save_visit(state, visit) {
@@ -227,15 +225,16 @@ const store = new Vuex.Store({
               reject(false)
             },  
           })
-        })      
+        })
     },
     set_proposal({commit}, prop) {
       console.log("STORE SET PROPOSAL SELECTED: " + prop)
-      if (prop) {
-        // If we don't do this now - the ProposalModel appends the old proposal code onto the request
-        commit('save_proposal', prop)
-
-        return new Promise((resolve, reject) => {
+      
+      return new Promise((resolve, reject) => {
+        if (prop) {
+          // If we don't do this now - the ProposalModel appends the old proposal code onto the request
+          commit('save_proposal', prop)
+  
           var proposalModel = new Proposal({ PROPOSAL: prop })
 
           proposalModel.fetch({
@@ -247,16 +246,15 @@ const store = new Vuex.Store({
 
               error: function() {
                 commit('add_notification', { title: 'No such proposal', message: 'The selected proposal does not exist', level: 'error' })
-                commit('clear_proposal')
-                commit('clear_proposal_type')
+                commit('save_proposal', null)
                 reject()
               },  
           })
-        })
-      } else {
-        commit('clear_proposal')
-        commit('clear_proposal_type')
-      }
+        } else {
+          commit('save_proposal', null)
+          resolve()
+        }
+      })
     },
     log({commit}, url) {
       console.log("Store tracking url: " + url)
@@ -307,7 +305,7 @@ const store = new Vuex.Store({
 
             commit('update_user', payload)
 
-            commit('clear_proposal')
+            commit('save_proposal', null)
 
             if (options && options.callback && options.callback instanceof Function) {
               options.callback()
