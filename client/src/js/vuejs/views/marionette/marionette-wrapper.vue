@@ -7,6 +7,7 @@
 </template>
 
 <script>
+import Marionette from 'marionette'
 import EventBus from '../../components/utils/event-bus.js'
 
 export default {
@@ -14,6 +15,7 @@ export default {
     props: {
         'mview': Function,
         'breadcrumbs' : Array,
+        'breadcrumb_hint' : String,
         'options': Object
     },
     data: function() {
@@ -53,9 +55,6 @@ export default {
             this.initialiseView()
         }
     },
-    beforeUpdate: function() {
-        console.log("MarionetteViewWrapper::beforeUpdate")
-    },
     beforeDestroy: function() {
         // We still have access to this so tidy up the marionette view
         console.log("MarionetteViewWrapper::beforeDestroy ")
@@ -72,11 +71,20 @@ export default {
                 if (this.options) {
                     options = Object.assign(options, this.options)
                 }
-        
-                console.log("MarionetteViewWrapper::initaliseView with el: " + options.el)
-                this.marionetteView = new this.mview(options)
-                this.marionetteView.render()
-            
+
+                // Deal with the passed marionette view.
+                // This might be a promise to resolve or a static constructor.
+                // Most Marionette views will be lazy loaded from their AMD module definitions until we convert to es2015 exports
+                if (this.mview instanceof Promise) {
+                    console.log("Marionette View handle lazy loading view...")
+                    this.mview.then((module) => {
+                        this.marionetteView = new module.default(options)
+                        this.marionetteView.render()
+                    })
+                } else {
+                    this.marionetteView = new this.mview(options)
+                    this.marionetteView.render()
+                }
             } else {
                 console.log("MarionetteViewWrapper::initaliseView could not find passed view")
             }
@@ -116,6 +124,10 @@ export default {
                     console.log("MarionetteViewWrapper:fetchModel ok")
                     self.loaded = true
                     self.$store.commit('loading', false)
+                    if (self.breadcrumb_hint) {
+                        self.breadcrumbs.push({title: model.get(self.breadcrumb_hint)})
+                        EventBus.$emit('bcChange', self.breadcrumbs)
+                    }
                 },
                 error: function() {
                     console.log("MarionetteViewWrapper:Error getting model")

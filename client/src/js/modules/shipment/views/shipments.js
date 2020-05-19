@@ -3,6 +3,7 @@ define(['marionette',
   'views/table', ], 
   function(Marionette, Backgrid, TableView) {
     
+    console.log("AMD SHIPMENTS VIEW HAS BEEN LOADED")
     
   var FocusableRow = Backgrid.Row.extend({
     events: {

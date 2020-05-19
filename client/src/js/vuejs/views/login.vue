@@ -45,9 +45,11 @@ export default {
     mounted: function() {
         console.log("Login mounted - redirect = " + this.$route.query.redirect)
 
-        if (this.sso) {
-            console.log("Redirecting to CAS")
-            // this.$router.go('https://' + this.sso_url + '?service=' + this.redirectUrl)
+        if (this.sso && location.href.indexOf('?ticket=') == -1) {
+            let url = 'https://localhost:9000'+this.redirectUrl
+            console.log("Login should be Redirecting to CAS: " + url)
+            // this.$router.replace(url)
+            window.location.href='https://'+this.sso_url+'/cas/login?service='+encodeURIComponent(url)
         }
 
         // Are we using SSO?
@@ -87,13 +89,6 @@ export default {
                     vm.saveUrl(to.query.redirect)
                 }
             })
-        } else {
-            next()
-        }
-    },
-    beforeRouteUpdate: function(to, from, next) {
-        if (to.query.redirect) {
-            next(vm => vm.saveUrl(to.query.redirect))
         } else {
             next()
         }

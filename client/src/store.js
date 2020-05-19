@@ -18,10 +18,16 @@ const store = new Vuex.Store({
     menu: MenuStore,
   },
   state: {
-    // Flag we use to check if we have already setup prop/token
+    // Flag we use to check if we have already setup options
     initialised: false,
     // Global api prefix
     apiRoot: API_ROOT,
+    // User and authentication values
+    auth: {
+      type: 'cas',
+      cas_sso: false,
+      cas_url: '',
+    },
     user: {
       username: '',
       isStaff: false,
@@ -30,22 +36,19 @@ const store = new Vuex.Store({
       permissions: []
     },
     token: '',
+    // Proposal / visit info
     proposal: '',
     proposalType: 'mx',
     visit: '',
+    // Notifications and events
     notifications: [],
     loading: false,
-    auth: {
-      type: 'cas',
-      cas_sso: false,
-      cas_url: '',
-    }
   },
   mutations: {
     //
     // Proposal and visit information
     //
-      save_proposal(state, prop) {
+      set_proposal(state, prop) {
         if (prop) {
           state.proposal = prop
           sessionStorage.setItem('prop', prop)  
@@ -60,12 +63,12 @@ const store = new Vuex.Store({
         // Legacy app
         app.prop = state.proposal
       },
-      save_proposal_type(state, proposalType) {
+      set_proposal_type(state, proposalType) {
         // Save type, default to user type if null passed
         state.proposalType = proposalType ? proposalType : state.user.defaultType
         app.type = state.proposalType
       },
-      save_visit(state, visit) {
+      set_visit(state, visit) {
         state.visit = visit
       },
       clear_visit(state) {
@@ -89,7 +92,7 @@ const store = new Vuex.Store({
         console.log("Store Clearing notification for id " + id)
         state.notifications = state.notifications.filter(notification => notification.id !== id)
       },
-      save_options(state, options) {
+      set_options(state, options) {
         state.auth.type = options.get('authentication_type')
         state.auth.cas_sso = options.get('cas_sso')
         state.auth.cas_url = options.get('cas_url')
@@ -98,6 +101,8 @@ const store = new Vuex.Store({
         // state.auth.cas_url = options['cas_url']  
         console.log("STORE UPDATING OPTIONS " + state.auth.cas_sso)
         console.log("STORE UPDATING OPTIONS " + state.auth.cas_url)
+
+        app.options = options
       },
       //
       // Loading screen
@@ -110,12 +115,10 @@ const store = new Vuex.Store({
       // Authorisation status
       //
       auth_request(state){
-        state.status = 'loading'
         state.loading = true
       },
       auth_success(state, token, username){
         state.loading = false
-        state.status = 'success'
         state.token = token
         state.user.username = username // part of larger user object, we don't have all the info yet
         sessionStorage.setItem('token', token)
@@ -124,7 +127,6 @@ const store = new Vuex.Store({
       },
       auth_error(state){
         state.loading = false
-        state.status = 'error'
         state.token = ''
         sessionStorage.removeItem('token')
       },
@@ -151,7 +153,6 @@ const store = new Vuex.Store({
         }
       },
       logout(state){
-        state.status = ''
         state.token = ''
         state.proposal = ''
         state.user = {}
@@ -163,48 +164,56 @@ const store = new Vuex.Store({
       },      
   },
   actions: {
-    check_auth({commit, dispatch}) {
+    check_auth({dispatch}, ticket) {
+      console.log("Check Auth Ticket = " + ticket)
       return new Promise( (resolve) => {
-        if (store.state.initialised) {
-          resolve(store.state.token !== '')
-        } else {
-          dispatch('initialise').then(function(ok) {
-            console.log('check_auth called initialise : ' + ok)
+        dispatch('initialise').then(function(ok) {
+          console.log('check_auth called initialise : ' + ok)
+          if (ticket) {
+            Backbone.ajax({
+              url: store.state.apiRoot+'/authenticate/check',//?ticket='+ticket,
+              type: 'GET',
+              success: function(response) {
+                console.log(JSON.stringify(response))
+                resolve(store.state.token !== '')
+              }
+            })
+          } else {
             resolve(store.state.token !== '')
-          })
-        }
+          }
+        })
       })
     },
+    // Initialise the Store
+    // This will set the app object with values from prop and token on start
+    // Also initialise marionette methods that require access to the store
     initialise({dispatch, commit}) {
       return new Promise((resolve, reject) => {
-        if (!this.state.initialised) {
-          console.log("STORE INIITALISE")
-          this.state.initialised = true
-  
-          app.apiurl = this.state.apiRoot
-          
-          // Get any stored value from sessionStorage
-          var prop = sessionStorage.getItem('prop')
-          var token = sessionStorage.getItem('token')
-    
-          if (token) {
-            console.log("Store Initialised token = " + token)
-            commit('auth_success', token)
-          }
-  
-          if (prop) {
-            commit('save_proposal', prop)
-          }
-          dispatch('get_options').then(function(val) {
-            console.log("GET OPTIONS HAS FINISHED - " + val)
-            resolve(val)
-          }, function(val) {
-            console.log("GET OPTIONS HAS FAILED - " + val)
-            reject(val)
-          })
-        } else {
-          resolve(true)
-        }
+        // First guard for the case we are already initialised
+        if (this.state.initialised) { resolve(true); return }
+
+        console.log("STORE INIITALISE")
+        this.state.initialised = true
+
+        // We need to map marionette functions onto their store mutations/actions
+        let application = MarionetteApplication.getInstance()
+
+        application.initStateMapping(store)
+        
+        // Get any stored value from sessionStorage and set the app object
+        var prop = sessionStorage.getItem('prop')
+        var token = sessionStorage.getItem('token')
+        
+        if (token) commit('auth_success', token)
+        if (prop) commit('set_proposal', prop)
+
+        dispatch('get_options').then(function(val) {
+          console.log("GET OPTIONS HAS FINISHED - " + val)
+          resolve(val)
+        }, function(val) {
+          console.log("GET OPTIONS HAS FAILED - " + val)
+          reject(val)
+        })
       })
     },
     get_options({commit}) {
@@ -214,9 +223,7 @@ const store = new Vuex.Store({
           options.fetch({
             data: { t: new Date().getTime() },
             success: function() {
-              commit('save_options', options)
-              // Let legacy part of app have access to this model
-              app.options = options
+              commit('set_options', options)
               resolve(true)
             },
 
@@ -233,25 +240,25 @@ const store = new Vuex.Store({
       return new Promise((resolve, reject) => {
         if (prop) {
           // If we don't do this now - the ProposalModel appends the old proposal code onto the request
-          commit('save_proposal', prop)
+          commit('set_proposal', prop)
   
           var proposalModel = new Proposal({ PROPOSAL: prop })
 
           proposalModel.fetch({
               success: function() {
                 var proposalType = proposalModel.get('TYPE')
-                commit('save_proposal_type', proposalType)
+                commit('set_proposal_type', proposalType)
                 resolve()
               },
 
               error: function() {
                 commit('add_notification', { title: 'No such proposal', message: 'The selected proposal does not exist', level: 'error' })
-                commit('save_proposal', null)
+                commit('set_proposal', null)
                 reject()
               },  
           })
         } else {
-          commit('save_proposal', null)
+          commit('set_proposal', null)
           resolve()
         }
       })
@@ -305,7 +312,7 @@ const store = new Vuex.Store({
 
             commit('update_user', payload)
 
-            commit('save_proposal', null)
+            commit('set_proposal', null)
 
             if (options && options.callback && options.callback instanceof Function) {
               options.callback()
@@ -341,10 +348,10 @@ const store = new Vuex.Store({
       return state.token
     },
     isLoading: state => state.loading,
-    authStatus: state => state.status,
     apiRoot: state => state.apiRoot,
     currentProposal: function(state) {
       // If we have no proposal set, check if there is one in storage
+      // Should not need to do this now.... TODO - simplify this
       if (!state.proposal) {
         let prop = sessionStorage.getItem('prop')
         if (prop) {
@@ -362,10 +369,5 @@ const store = new Vuex.Store({
     notifications: state => state.notifications,
   }
 })
-
-// We need to map marionette functions onto their store mutations/actions
-let application = MarionetteApplication.getInstance()
-
-application.initStateMapping(store)
 
 export default store

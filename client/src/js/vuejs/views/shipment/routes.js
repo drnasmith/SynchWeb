@@ -7,7 +7,7 @@ import ViewShipment from './shipmentView.vue'
 export default 
 [
   {
-    path: '/shipments',
+    path: '/vshipments',
     component: Page,
     children: [
       {

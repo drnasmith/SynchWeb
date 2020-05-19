@@ -1,6 +1,5 @@
 import Backbone from 'backbone'
 import Marionette from 'backbone.marionette'
-import Options from 'models/options'
 
 var MarionetteApplication = (function () {
     var instance;
@@ -120,7 +119,6 @@ var MarionetteApplication = (function () {
         //     //         console.log("MarionetteApplication Options not available")
         //     //     }
         //     // })
-
         // })
 
         
@@ -159,7 +157,7 @@ var MarionetteApplication = (function () {
         // Pass vuex-store into this one
         application.initStateMapping = function(store) {
             // Map legacy app functions to store mutations and actions
-            // application = getInstance()
+            application.apiurl = store.getters.apiRoot
             
             application.cookie = function(prop, callbackFn) {
                 console.log("Saving proposal from legacy cookie fn")

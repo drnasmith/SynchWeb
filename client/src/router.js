@@ -9,9 +9,12 @@ import NoPage from 'vuejs/views/nopage.vue'
 import Proposals from 'vuejs/views/proposals.vue'
 import Proteins from 'vuejs/views/proteins.vue'
 import Dewars from 'vuejs/views/registeredDewars.vue'
-import Feedback from 'vuejs/views/feedback/feedback.vue'
+// import Feedback from 'vuejs/views/feedback/feedback.vue'
 
-import ShipmentRoutes from 'vuejs/views/shipment/routes.js'
+const Feedback = () => import(/* webpackChunkName: "group-feedback" */ 'vuejs/views/feedback/feedback.vue')
+
+
+import VShipmentRoutes from 'vuejs/views/shipment/routes.js'
 import ContactRoutes from 'vuejs/views/contacts/routes.js'
 import {routes as CalendarRoutes} from 'modules/calendar/vue-routes.js'
 
@@ -19,7 +22,10 @@ import {routes as LegacyRoutes} from 'modules/contact/vue-routes.js'
 import {routes as ProposalRoutes} from 'modules/proposal/vue-routes.js'
 import {routes as FeedbackRoutes} from 'modules/feedback/vue-routes.js'
 import {routes as TutorialRoutes} from 'modules/docs/vue-routes.js'
+
+import ShipmentRoutes from 'modules/shipment/vue-routes.js'
 import MarionetteApplication from './js/vuejs/views/marionette/singleton.js'
+
 
 Vue.use(Router)
 
@@ -87,13 +93,14 @@ let asyncRoutes = [
 console.log("ROUTER IMPORTED")
 
 router.addRoutes(asyncRoutes)
-router.addRoutes(ShipmentRoutes)
+router.addRoutes(VShipmentRoutes)
 router.addRoutes(ContactRoutes)
 router.addRoutes(CalendarRoutes())
 router.addRoutes(LegacyRoutes())
 router.addRoutes(ProposalRoutes())
 router.addRoutes(FeedbackRoutes())
 router.addRoutes(TutorialRoutes())
+router.addRoutes(ShipmentRoutes)
 
 let application = MarionetteApplication.getInstance()
 
@@ -112,11 +119,13 @@ var parseQuery = function(path) {
   if ('prop' in pairs) {
     return pairs.prop
   }
-  // sessionStorage.setItem('prop', pairs.prop)
 }
   
 router.beforeEach((to, from, next) => {
-  if (to.matched.length === 0) next('nopage?url='+to.fullPath)
+  if (to.matched.length === 0) { next('/nopage?url='+to.fullPath); return }
+  if (to.path === '/nopage') { next(); return }
+  if (to.path === '/') { next(); return }
+  if (to.path === '/login' && !to.query.redirect) { next(); return }
 
   console.log("router.beforeEach to: " + to.path + ", from: " + from.path + ", redirect: " + to.query.redirect)
   console.log("router query params... " + JSON.stringify(to.query))
@@ -125,37 +134,28 @@ router.beforeEach((to, from, next) => {
     if (!authenticated) {
       console.log("Router thinks we are not authenticated for path " + to.path)
     
-      if (to.path === '/' || to.path === '/login') {
-        console.log("router.beforeEach normal navigation to login")
-        next()
-      } else {
-        console.log('router.beforeEach redirecting to login to: ' + to.path + ', from: ' + from.path)
-        next({
-          path: '/login',
-          query: { redirect: to.fullPath }
-        })  
-      }
-    } else {
-      // We have a token although it may be out of date...?
       if (to.query['ticket']) {
-        // Redirecting from CAS login...
-        console.log("Redirecting from CAS Login for Single Sign on")
-    
-        next(to.fullPath)
-    
+        console.log('Detected CAS redirect')
+        next('/nopage?url=' + to.fullPath)
+      } else {
+          console.log('router.beforeEach redirecting to login to: ' + to.path + ', from: ' + from.path)
+          // This helps us redirect to a url if we are not logged in
+          next({
+            path: '/login',
+            query: { redirect: to.fullPath }
+          })  
+        }  
       } else {
         // Check if we should extract proposal from url
         var prop = parseQuery(to.path)
       
-        if (prop) {
-          store.commit('save_proposal', prop)
-        }
-      
+        if (prop) store.commit('set_proposal', prop)
+     
         store.dispatch('log', to.path)
       
         console.log("router.beforeEach user already logged in")
+
         next()
-      }  
     }
   })
 })

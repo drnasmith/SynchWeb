@@ -76,7 +76,7 @@
                 <p class="tw-text-center tw-text-lg">If you are looking for archived data please visit the data catalogue <a :href="datacatalogue.url">{{datacatalogue.name}}</a></p>
             </div>
         </div>
-        <color-test/>
+        <!-- <color-test/> -->
     </section>
 </template>
 
@@ -244,7 +244,7 @@ export default {
         let self = this
         // Get visits for this user
         let url = this.$store.getters.apiRoot + '/proposal/visits'
-        this.$store.commit('save_proposal', null)
+        this.$store.commit('set_proposal', null)
         EventBus.$emit('bcChange', [{title: '/', link: '/'}])
     },
     filters: {

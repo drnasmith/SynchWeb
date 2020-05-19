@@ -22,7 +22,7 @@
                 Projects
             </router-link>
         
-            <router-link to="/feedback" class="tw-py-4 tw-bg-sidebar-mobile-background hover:tw-bg-gray-100 tw-border tw-border-gray-400 tw-text-white tw-text-left tw-text-xs tw-px-2">
+            <router-link to="/vuefeedback" class="tw-py-4 tw-bg-sidebar-mobile-background hover:tw-bg-gray-100 tw-border tw-border-gray-400 tw-text-white tw-text-left tw-text-xs tw-px-2">
                 Feedback
             </router-link>
 

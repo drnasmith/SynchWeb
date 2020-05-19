@@ -3,10 +3,10 @@
 import MarionetteView from 'vuejs/views/marionette/marionette-wrapper.vue'
 import Page from 'vuejs/views/page.vue'
 
-import ContactList from 'modules/contact/views/contacts.js'
-import ContactView from 'modules/contact/views/viewcontact.js'
-import AddContact from 'modules/contact/views/addcontact.js'
-import ViewContact from 'modules/contact/views/viewcontact.js'
+const ContactList = import(/* webpackChunkName: "group-contacts" */  'modules/contact/views/contacts.js')
+const ContactView = import(/* webpackChunkName: "group-contacts" */ 'modules/contact/views/viewcontact.js')
+const AddContact = import(/* webpackChunkName: "group-contacts" */ 'modules/contact/views/addcontact.js')
+const ViewContact = import(/* webpackChunkName: "group-contacts" */ 'modules/contact/views/viewcontact.js')
 
 import Contacts from 'collections/labcontacts.js'
 import Contact from 'models/labcontact.js'
@@ -57,7 +57,8 @@ export function routes() {
         component: MarionetteView,
         props: route => ({ 
           mview: ContactView,
-          breadcrumbs: [bc, { title: route.params.cid }],
+          breadcrumbs: [bc],
+          breadcrumb_hint: 'CARDNAME',
           options: {
             model: new Contact({ LABCONTACTID: route.params.cid })
           }
