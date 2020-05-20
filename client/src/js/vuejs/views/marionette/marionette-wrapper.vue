@@ -133,6 +133,7 @@ export default {
                     console.log("MarionetteViewWrapper:Error getting model")
                     self.loaded = false
                     self.$store.commit('loading', false)
+                    app.message({ title: 'No such model', message: 'The specified model could not be found'})
                 }
             })
         },
