@@ -24,6 +24,7 @@ import {routes as FeedbackRoutes} from 'modules/feedback/vue-routes.js'
 import {routes as TutorialRoutes} from 'modules/docs/vue-routes.js'
 
 import ShipmentRoutes from 'modules/shipment/vue-routes.js'
+import AdminRoutes from 'modules/admin/routes.js'
 import MarionetteApplication from './js/vuejs/views/marionette/singleton.js'
 
 
@@ -101,6 +102,7 @@ router.addRoutes(ProposalRoutes())
 router.addRoutes(FeedbackRoutes())
 router.addRoutes(TutorialRoutes())
 router.addRoutes(ShipmentRoutes)
+router.addRoutes(AdminRoutes)
 
 let application = MarionetteApplication.getInstance()
 
