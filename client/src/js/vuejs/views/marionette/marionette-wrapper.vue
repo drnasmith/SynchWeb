@@ -57,8 +57,10 @@ export default {
     },
     beforeDestroy: function() {
         // We still have access to this so tidy up the marionette view
-        console.log("MarionetteViewWrapper::beforeDestroy ")
-        this.marionetteView.destroy()
+        if (this.marionetteView) {
+            console.log("MarionetteViewWrapper::beforeDestroy - cleaning up view ")
+            this.marionetteView.destroy()
+        }
     },
     methods: {
         initialiseView: function() {
@@ -89,57 +91,128 @@ export default {
                 console.log("MarionetteViewWrapper::initaliseView could not find passed view")
             }
         },
+        //
+        // Non Promise version
+        //
+        // prefetchData: function() {
+        //     console.log("Marionette Wrapper prefetching data")
+        //     // Do we need to 
+        //     if (this.options && this.options.collection) {
+        //         this.fetchCollection(this.options.collection, this.options.queryParams)
+        //         console.log("MARIONETTE WRAPPER HAS OPTIONS.COLLECTION")
+        //     }
+        //     if (this.options && this.options.model) {
+        //         this.fetchModel(this.options.model, this.options.queryParams)
+        //         console.log("MARIONETTE WRAPPER HAS OPTIONS.MODEL")
+        //     }
+        // },
+        // fetchCollection: function(collection, queryParams) {
+        //     this.$store.commit('loading', true)
+        //     let self = this
+        //     collection.queryParms = queryParams ? queryParams : null
+        //     collection.fetch({
+        //         success: function() {
+        //             console.log("MarionetteViewWrapper:fetchCollection ok")
+        //             self.loaded = true
+        //             self.$store.commit('loading', false)
+        //         },
+        //         error: function() {
+        //             console.log("MarionetteViewWrapper:Error getting collection")
+        //             self.loaded = false
+        //             self.$store.commit('loading', false)
+        //             app.alert({ title: 'No such collection', message: 'The specified collection could not be found'})
+        //         }
+        //     })
+        // },
+        // fetchModel: function(model, queryParams) {
+        //     this.$store.commit('loading', true)
+        //     let self = this
+        //     model.queryParms = queryParams ? queryParams : null
+        //     model.fetch({
+        //         success: function() {
+        //             console.log("MarionetteViewWrapper:fetchModel ok")
+        //             self.loaded = true
+        //             self.$store.commit('loading', false)
+        //             if (self.breadcrumb_hint) {
+        //                 self.breadcrumbs.push({title: model.get(self.breadcrumb_hint)})
+        //                 EventBus.$emit('bcChange', self.breadcrumbs)
+        //             }
+        //         },
+        //         error: function() {
+        //             console.log("MarionetteViewWrapper:Error getting model")
+        //             self.loaded = false
+        //             self.$store.commit('loading', false)
+        //             app.alert({ title: 'No such model', message: 'The specified model could not be found'})
+        //         }
+        //     })
+        // },
+
+        //
+        // Promise Version - wait for collections and models to be prefetched before returning
+        //
         prefetchData: function() {
-            if (this.options && this.options.collection) {
-                this.fetchCollection(this.options.collection, this.options.queryParams)
-            } else if (this.options && this.options.model) {
-                this.fetchModel(this.options.model, this.options.queryParams)
+            if (this.options.model || this.options.collection) {
+                let self = this
+                console.log("Marionette Wrapper prefetching data via promise")
+                const promiseCollection = this.fetchCollection(this.options.collection, this.options.queryParams)
+                const promiseModel = this.fetchModel(this.options.model, this.options.queryParams)
+                Promise.all([promiseCollection, promiseModel]).then(() => {
+                    self.loaded = true
+                    return
+                })
             } else {
-                console.log("MarionetteViewWrapper::prefetchData No options provided")
+                self.loaded = true
+                return
             }
         },
         fetchCollection: function(collection, queryParams) {
-            this.$store.commit('loading', true)
-            let self = this
-            collection.queryParms = queryParams ? queryParams : null
-            collection.fetch({
-                success: function() {
-                    console.log("MarionetteViewWrapper:fetchCollection ok")
-                    self.loaded = true
-                    self.$store.commit('loading', false)
-                },
-                error: function() {
-                    console.log("MarionetteViewWrapper:Error getting collection")
-                    self.loaded = false
-                    self.$store.commit('loading', false)
-                }
+            return new Promise((resolve, reject) => {
+                // If we have no collection return immediately
+                if (!collection) { resolve() }
+
+                this.$store.commit('loading', true)
+                let self = this
+                collection.queryParms = queryParams ? queryParams : null
+                collection.fetch({
+                    success: function() {
+                        self.$store.commit('loading', false)
+                        resolve()
+                    },
+                    error: function() {
+                        self.$store.commit('loading', false)
+                        app.message({ title: 'No such collection', message: 'The specified collection could not be found'})
+                        reject()
+                    }
+                })
             })
         },
         fetchModel: function(model, queryParams) {
-            this.$store.commit('loading', true)
-            let self = this
-            model.queryParms = queryParams ? queryParams : null
-            model.fetch({
-                success: function() {
-                    console.log("MarionetteViewWrapper:fetchModel ok")
-                    self.loaded = true
-                    self.$store.commit('loading', false)
-                    if (self.breadcrumb_hint) {
-                        self.breadcrumbs.push({title: model.get(self.breadcrumb_hint)})
-                        EventBus.$emit('bcChange', self.breadcrumbs)
+            return new Promise((resolve, reject) => {
+                // If we have no model return immediately
+                if (!model) { resolve() }
+                
+                this.$store.commit('loading', true)
+                let self = this
+                model.queryParms = queryParams ? queryParams : null
+                model.fetch({
+                    success: function() {
+                        self.$store.commit('loading', false)
+                        if (self.breadcrumb_hint) {
+                            self.breadcrumbs.push({title: model.get(self.breadcrumb_hint)})
+                            EventBus.$emit('bcChange', self.breadcrumbs)
+                        }
+                        resolve()
+                    },
+                    error: function() {
+                        self.$store.commit('loading', false)
+                        app.message({ title: 'No such model', message: 'The specified model could not be found'})
+                        reject()
                     }
-                },
-                error: function() {
-                    console.log("MarionetteViewWrapper:Error getting model")
-                    self.loaded = false
-                    self.$store.commit('loading', false)
-                    app.message({ title: 'No such model', message: 'The specified model could not be found'})
-                }
+                })
             })
         },
     },
     beforeRouteEnter: function(to, from, next) {
-        console.log("MarionetteViewWrapper::beforeRouteEnter to: " + to.path + ", from: " + from.path)
         next(vm => vm.prefetchData())
     }
 }
