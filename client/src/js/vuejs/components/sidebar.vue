@@ -12,7 +12,7 @@
             </router-link>
             
             <div>
-                <router-link v-for="(item, index) in menu" :key="index" :to="item.link" 
+                <router-link v-for="(item, index) in menu" :key="index" :to="item.link | link" 
                     class="tw-w-full tw-border-b tw-border-gray-400 tw-bg-sidebar-mobile-background hover:tw-bg-gray-100 tw-block tw-text-white tw-py-4 tw-px-4">
                     {{item.name}}
                 </router-link>
@@ -66,6 +66,17 @@ export default {
         },
         isLoggedIn: function() {
             return this.$store.getters.isLoggedIn
+        }
+    },
+
+    filters: {
+        link: function(url) {
+            // Make sure all menu options are absolute paths
+            if (url[0] !== '/') {
+                return '/'+url
+            } else {
+                return url
+            }
         }
     },
 
