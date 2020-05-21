@@ -32,50 +32,31 @@ app.on('visit:show', function(visit) {
     // controller.viewVisit(visit)
 })
 
-var bc = { title: 'Manage Groups & Permissions', url: '/admin/groups' }
-var bc2 = { title: 'Manage Proposals & Visits', url: '/admin/proposals' }
+let bc = { title: 'Manage Groups & Permissions', url: '/admin/groups' }
+let bc2 = { title: 'Manage Proposals & Visits', url: '/admin/proposals' }
 
-// 'admin/groups': 'manageGroups',
-// 'admin/groups/:gid': 'viewGroup',
+// Should probably use the store to cache values like this.
+let proposalModel = {}
 
-// 'admin/proposals': 'manageProposals',
-// 'admin/proposals/add': 'addProposal',
-// 'admin/proposals/:prop': 'viewProposal',
-// 'admin/proposals/visit/add/:prop': 'addVisit',
-// 'admin/proposals/visit/:visit': 'viewVisit',
+function lookupProposal(params) {
+    return new Promise((resolve, reject) => {
+        proposalModel = new Proposal({ PROPOSAL: params.prop })
 
-
-// Determine the correct visit link list to display
-function getAddVisitProps (route) {
-    console.log("Admin::vue-routes - getVisitProps")
-
-    let proposalModel = new Proposal({ PROPOSAL: route.params.prop })
-
-    proposalModel.fetch({
-        // If OK trigger next 
-        success: function() {
-          return {
-            mview: AddVisit,
-            breadcrumbs: [bc2, {title: route.params.prop}, {title: 'Add Visit'}],
-            options: {
-                proposal: proposalModel,
+        proposalModel.fetch({
+            // If OK trigger next 
+            success: function() {
+              console.log("Admin proposal model lookup OK")
+              resolve(proposalModel)
+            },
+            // Original controller had no error condition...
+            error: function() {
+                reject({msg: "Admin proposal model lookup failed"})
             }
-          }
-        },
-        // Original controller had no error condition...
-        error: function() {
-          return {
-            mview: AddVisit,
-            breadcrumbs: [bc2, {title: route.params.prop}, {title: 'Add Visit - Proposal Not Found'}],
-            options: {
-                proposal: proposalModel,
-            }
-          }
-        },
-      })
-  }
+        })    
+    })
+}
 
-var routes = [
+let routes = [
     {
         path: '/admin/groups',
         component: Page,
@@ -153,7 +134,24 @@ var routes = [
                 path: 'visit/add/:prop',
                 name: 'admin-add-visit',
                 component: MarionetteView,
-                props: getAddVisitProps,
+                props: route => ({
+                    mview: AddVisit,
+                    breadcrumbs: [bc2, {title: route.params.prop}, {title: 'Add Visit'}],
+                    options: {
+                        proposal: proposalModel,
+                    }
+                }),
+                beforeEnter: (to, from, next) => {
+                    console.log("Lookup admin visit add proposal Model")
+                
+                    lookupProposal(to.params).then((response) => {
+                        console.log("Lookup Model OK - " + response)
+                        next()
+                    }, (error) => { 
+                        console.log(error.msg)
+                        next('/nopage')
+                    })
+                }
             },
             {
                 path: 'visit/:visit',
@@ -169,14 +167,14 @@ var routes = [
                 }),
             },
         ],
-        // beforeEnter(to, from, next) {
-        //     if (!app.user_can('manage_proposal')) {
-        //         app.message({ title: 'Access Denied', message: 'You do not have access to that page' })
-        //         next('/')
-        //     } else {
-        //         next()
-        //     }
-        // }
+        beforeEnter(to, from, next) {
+            if (!app.user_can('manage_proposal')) {
+                app.message({ title: 'Access Denied', message: 'You do not have access to that page' })
+                next('/')
+            } else {
+                next()
+            }
+        }
     },
 ]
 
