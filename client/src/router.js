@@ -25,6 +25,7 @@ import {routes as TutorialRoutes} from 'modules/docs/vue-routes.js'
 
 import ShipmentRoutes from 'modules/shipment/vue-routes.js'
 import AdminRoutes from 'modules/admin/routes.js'
+import DCRoutes from 'modules/dc/routes.js'
 import MarionetteApplication from './js/vuejs/views/marionette/singleton.js'
 
 
@@ -102,6 +103,7 @@ router.addRoutes(ProposalRoutes())
 router.addRoutes(FeedbackRoutes())
 router.addRoutes(TutorialRoutes())
 router.addRoutes(ShipmentRoutes)
+router.addRoutes(DCRoutes)
 router.addRoutes(AdminRoutes)
 
 let application = MarionetteApplication.getInstance()
@@ -124,13 +126,14 @@ var parseQuery = function(path) {
 }
   
 router.beforeEach((to, from, next) => {
+  console.log("Router beforeEach " + to.path)
   if (to.matched.length === 0) { next('/nopage?url='+to.fullPath); return }
   if (to.path === '/nopage') { next(); return }
   if (to.path === '/') { next(); return }
   if (to.path === '/login' && !to.query.redirect) { next(); return }
 
-  console.log("router.beforeEach to: " + to.path + ", from: " + from.path + ", redirect: " + to.query.redirect)
-  console.log("router query params... " + JSON.stringify(to.query))
+  // console.log("router.beforeEach to: " + to.path + ", from: " + from.path + ", redirect: " + to.query.redirect)
+  // console.log("router query params... " + JSON.stringify(to.query))
 
   store.dispatch('check_auth').then(function(authenticated) {
     if (!authenticated) {
@@ -155,8 +158,6 @@ router.beforeEach((to, from, next) => {
      
         store.dispatch('log', to.path)
       
-        console.log("router.beforeEach user already logged in")
-
         next()
     }
   })

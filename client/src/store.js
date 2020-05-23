@@ -98,7 +98,7 @@ const store = new Vuex.Store({
         state.auth.cas_url = options.get('cas_url')
         // state.auth.type = options['authentication_type']
         // state.auth.cas_sso = options['cas_sso']
-        // state.auth.cas_url = options['cas_url']  
+        // state.auth.cas_url = options['cas_url']
         console.log("STORE UPDATING OPTIONS " + state.auth.cas_sso)
         console.log("STORE UPDATING OPTIONS " + state.auth.cas_url)
 
@@ -131,6 +131,7 @@ const store = new Vuex.Store({
         sessionStorage.removeItem('token')
       },
       update_user(state, user) {
+        console.log("STORE UPDATING USER INFO...")
         // user should be an object with { username, personid, is_staff, givenname, defaultType}
         // Explicit mapping here to catch any errors and avoid unnecessary values
         state.user.username = user.user
@@ -208,10 +209,8 @@ const store = new Vuex.Store({
         if (prop) commit('set_proposal', prop)
 
         dispatch('get_options').then(function(val) {
-          console.log("GET OPTIONS HAS FINISHED - " + val)
           resolve(val)
         }, function(val) {
-          console.log("GET OPTIONS HAS FAILED - " + val)
           reject(val)
         })
       })
