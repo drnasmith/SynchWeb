@@ -16,7 +16,11 @@ export default {
         'mview': Function,
         'breadcrumbs' : Array,
         'breadcrumb_hint' : String,
-        'options': Object
+        'options': Object,
+        'fetchOnLoad': {
+            type: Boolean,
+            default: false,
+        }
     },
     data: function() {
         return {
@@ -39,9 +43,10 @@ export default {
             if (val) {
                 this.initialiseView()
             }
-        }
+        },
     },
     created: function() {
+        console.log("MarionetteViewWrapper::created " + this.$router.currentRoute.path )
         // If we have been passed breadcrumbs, send the update event
         if (this.breadcrumbs) {
             console.log("Marionette View bc: " + JSON.stringify(this.breadcrumbs))
@@ -53,6 +58,8 @@ export default {
         if (this.prefetch === false) {
             // No prefetching, initialise now
             this.initialiseView()
+        } else {
+            if (this.fetchOnLoad) this.prefetchData()
         }
     },
     beforeDestroy: function() {
@@ -64,6 +71,7 @@ export default {
     },
     methods: {
         initialiseView: function() {
+            console.log("MV Initialise View")
             if (this.mview) {
 
                 let options = {}
@@ -73,6 +81,7 @@ export default {
                 if (this.options) {
                     options = Object.assign(options, this.options)
                 }
+                // console.log("Marionette View passing options " + JSON.stringify(options))
 
                 // Deal with the passed marionette view.
                 // This might be a promise to resolve or a static constructor.
@@ -84,6 +93,7 @@ export default {
                         this.marionetteView.render()
                     })
                 } else {
+                    console.log("Marionette View handle normal view...")
                     this.marionetteView = new this.mview(options)
                     this.marionetteView.render()
                 }
@@ -151,12 +161,19 @@ export default {
         // Promise Version - wait for collections and models to be prefetched before returning
         //
         prefetchData: function() {
+            if (!this.options) { this.loaded = true; return }
+            
             if (this.options.model || this.options.collection) {
                 let self = this
                 console.log("Marionette Wrapper prefetching data via promise")
+                if (this.options.queryParams) console.log("MV QUERY PARAMS= " + this.options.queryParams)
                 const promiseCollection = this.fetchCollection(this.options.collection, this.options.queryParams)
                 const promiseModel = this.fetchModel(this.options.model, this.options.queryParams)
+
                 Promise.all([promiseCollection, promiseModel]).then(() => {
+                    console.log("Marionette View Prefetch complete")
+                    if (this.options.collection) console.log("MV Collection: " + JSON.stringify(this.options.collection.models))
+                    if (this.options.model) console.log("MV Model: " + JSON.stringify(this.options.model))
                     self.loaded = true
                     return
                 })
@@ -168,17 +185,25 @@ export default {
         fetchCollection: function(collection, queryParams) {
             return new Promise((resolve, reject) => {
                 // If we have no collection return immediately
-                if (!collection) { resolve() }
+                if (!collection) { console.log("MV fetchCollection No collection"); resolve() }
 
                 this.$store.commit('loading', true)
                 let self = this
                 collection.queryParms = queryParams ? queryParams : null
+                // Test of annoying pageable dc condition....
                 collection.fetch({
                     success: function() {
+                        console.log("MV Fetch Collection SUCCESS " + JSON.stringify(collection.models))
                         self.$store.commit('loading', false)
+                        
+                        // Seems that we need to force the collection to be updated here.
+                        // Were seeing cases where the collection was rendered as [] even if the fetch worked/
+                        self.options.collection = collection
+
                         resolve()
                     },
                     error: function() {
+                        console.log("MV Fetch Collection FAILED ")
                         self.$store.commit('loading', false)
                         app.message({ title: 'No such collection', message: 'The specified collection could not be found'})
                         reject()

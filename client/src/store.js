@@ -6,6 +6,8 @@ import MenuStore from './store.menus.js'
 import Backbone from 'backbone'
 import Proposal from 'models/proposal.js'
 import Options from 'models/options.js'
+import ProposalLookup from 'models/proplookup.js'
+
 import MarionetteApplication from './js/vuejs/views/marionette/singleton.js'
 
 Vue.use(Vuex)
@@ -331,6 +333,27 @@ const store = new Vuex.Store({
         })
       })
     },
+    // Set the proposal based on looking up a collection/contact id
+    // 
+    proposal_lookup(state, params) {
+      return new Promise((resolve, reject) => {
+        // If not already logged in - return
+        var lookup = new ProposalLookup({ field: params.field, value: params.value })
+        
+        lookup.find({
+            success: function() {
+              // If ok then ProposalLookup has set a new proposal for us
+              // We might need to do other things here - refresh proposal type?
+              console.log(JSON.stringify(lookup))
+              resolve(lookup)
+            },
+            error: function() {
+              reject({msg: 'Error looking up proposal from ' + params.field})
+            }
+        })
+      })
+    },
+
   },
   getters: {
     isLoggedIn: function(state) {
