@@ -1,6 +1,6 @@
 <template>
 
-    <div v-show="isLoggedIn" data-cy="navbar" class="tw-hidden md:tw-flex md:flex-row tw-bg-sidebar-grad-end tw-justify-center tw-my-2 md:tw-mx-4">
+    <div v-show="isLoggedIn" data-cy="navbar" class="tw-hidden md:tw-flex md:flex-row tw-bg-sidebar-grad-end tw-justify-center tw-my-4 md:tw-mx-4">
         <router-link to="/proposals" class="md:tw-w-48 tw-py-4 tw-bg-sidebar-grad-end hover:tw-bg-gray-100 tw-border tw-border-gray-400 tw-text-gray-800 tw-text-center tw-text-xs">
             Proposals
         </router-link>

@@ -1,15 +1,14 @@
-var Styles = require('./css/main.css')
+var Styles = require('css/main.css')
 var FontAwesome = require('font-awesome/css/font-awesome.css')
   
 import Vue from 'vue'
 import Vuelidate from 'vuelidate'
 
-import App from './js/vuejs/App.vue'
-import store from './store'
-import router from './router'
-import {initialiseRouter} from './router'
+import App from './App.vue'
+import store from './store/store'
+import router from './router/router'
 
-import MarionetteApp from './js/vuejs/views/marionette/singleton.js'
+import MarionetteApp from './views/marionette/singleton.js'
 
 Vue.config.productionTip = false
 

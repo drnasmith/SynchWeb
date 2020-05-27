@@ -1,32 +1,33 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import store from './store.js'
+import store from '../store/store.js'
 
-import Home from 'vuejs/views/home.vue'
-import Login from 'vuejs/views/login.vue'
-import Visits from 'vuejs/views/visits.vue'
-import NoPage from 'vuejs/views/nopage.vue'
-import Proposals from 'vuejs/views/proposals.vue'
-import Proteins from 'vuejs/views/proteins.vue'
-import Dewars from 'vuejs/views/registeredDewars.vue'
-// import Feedback from 'vuejs/views/feedback/feedback.vue'
+import MarionetteApplication from 'app/views/marionette/singleton.js'
 
-const Feedback = () => import(/* webpackChunkName: "group-feedback" */ 'vuejs/views/feedback/feedback.vue')
+import Home from 'app/views/home.vue'
+import Login from 'app/views/login.vue'
+import Visits from 'app/views/visits.vue'
+import NoPage from 'app/views/nopage.vue'
+import Proposals from 'app/views/proposals.vue'
+import Proteins from 'app/views/proteins.vue'
+import Dewars from 'app/views/registeredDewars.vue'
+// import Feedback from 'app/views/feedback/feedback.vue'
 
+// How you can dynamically import a child component
+const Feedback = () => import(/* webpackChunkName: "group-feedback" */ 'app/views/feedback/feedback.vue')
 
-import VShipmentRoutes from 'vuejs/views/shipment/routes.js'
-import ContactRoutes from 'vuejs/views/contacts/routes.js'
+import VShipmentRoutes from 'app/views/shipment/routes.js'
+import ContactRoutes from 'app/views/contacts/routes.js'
 import {routes as CalendarRoutes} from 'modules/calendar/vue-routes.js'
 
 import {routes as LegacyRoutes} from 'modules/contact/vue-routes.js'
 import {routes as ProposalRoutes} from 'modules/proposal/vue-routes.js'
-import {routes as FeedbackRoutes} from 'modules/feedback/vue-routes.js'
 import {routes as TutorialRoutes} from 'modules/docs/vue-routes.js'
 
+import FeedbackRoutes from 'modules/feedback/routes.js'
 import ShipmentRoutes from 'modules/shipment/vue-routes.js'
 import AdminRoutes from 'modules/admin/routes.js'
 import DCRoutes from 'modules/dc/routes.js'
-import MarionetteApplication from './js/vuejs/views/marionette/singleton.js'
 
 
 Vue.use(Router)
@@ -100,8 +101,8 @@ router.addRoutes(ContactRoutes)
 router.addRoutes(CalendarRoutes())
 router.addRoutes(LegacyRoutes())
 router.addRoutes(ProposalRoutes())
-router.addRoutes(FeedbackRoutes())
 router.addRoutes(TutorialRoutes())
+router.addRoutes(FeedbackRoutes)
 router.addRoutes(ShipmentRoutes)
 router.addRoutes(DCRoutes)
 router.addRoutes(AdminRoutes)

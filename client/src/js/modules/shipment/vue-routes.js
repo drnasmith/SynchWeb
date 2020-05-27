@@ -1,8 +1,8 @@
-// import MarionetteApp from 'vuejs/views/marionette/application.js'
-import MarionetteApplication from 'vuejs/views/marionette/singleton.js'
-import MarionetteView from 'vuejs/views/marionette/marionette-wrapper.vue'
-// import Page from 'vuejs/views/page.vue'
-const Page = () => import(/* webpackChunkName: "group-shipment" */'vuejs/views/page.vue')
+// import MarionetteApp from 'app/views/marionette/application.js'
+import MarionetteApplication from 'app/views/marionette/singleton.js'
+import MarionetteView from 'app/views/marionette/marionette-wrapper.vue'
+// import Page from 'app/views/page.vue'
+const Page = () => import(/* webpackChunkName: "group-shipment" */'app/views/page.vue')
 
 import ProposalLookup from 'models/proplookup.js'
 

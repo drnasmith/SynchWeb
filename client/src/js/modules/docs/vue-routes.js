@@ -4,8 +4,8 @@
 // Models and collections can be specified as props
 // If a model or collection is passed in the data will be prefetched before the component is loaded
 // Props that make use of the route object should use props: route => ({ ...define prop using route.params object})
-import Page from 'vuejs/views/page.vue'
-import MarionetteView from 'vuejs/views/marionette/marionette-wrapper.vue'
+import Page from 'app/views/page.vue'
+import MarionetteView from 'app/views/marionette/marionette-wrapper.vue'
 import TutorialsView from 'modules/docs/views/vue-tutorials'
 
 export function routes() {

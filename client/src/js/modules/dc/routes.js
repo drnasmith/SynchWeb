@@ -1,8 +1,8 @@
 import DC from 'modules/dc/DC.vue'
-import Debug from 'vuejs/views/Debug.vue'
+import Debug from 'app/views/Debug.vue'
 
-import MarionetteView from 'vuejs/views/marionette/marionette-wrapper.vue'
-import MarionetteApplication from 'vuejs/views/marionette/singleton.js'
+import MarionetteView from 'app/views/marionette/marionette-wrapper.vue'
+import MarionetteApplication from 'app/views/marionette/singleton.js'
 
 // Data Collection Marionette Views
 import ImageViewer from 'modules/dc/views/imageviewer'
@@ -17,7 +17,7 @@ import DataCollection from 'models/datacollection'
 import DCCol from 'collections/datacollections'
 import Visit from 'models/visit'
 
-import store from '../../../store'
+import store from 'app/store/store'
 
 // Initialize MarionetteApplication if not already existing
 let application = MarionetteApplication.getInstance()

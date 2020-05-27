@@ -1,7 +1,7 @@
-// import MarionetteApp from 'vuejs/views/marionette/app.js'
-import MarionetteApplication from 'vuejs/views/marionette/singleton.js'
-import MarionetteView from 'vuejs/views/marionette/marionette-wrapper.vue'
-import Page from 'vuejs/views/page.vue'
+// import MarionetteApp from 'app/views/marionette/app.js'
+import MarionetteApplication from 'app/views/marionette/singleton.js'
+import MarionetteView from 'app/views/marionette/marionette-wrapper.vue'
+import Page from 'app/views/page.vue'
 
 import ProposalList from 'modules/proposal/list'
 import VisitList from 'modules/proposal/visit_list'

@@ -2,14 +2,26 @@ define([], function() {
     
     return {
         opts: function() {
-            return _.map(this.list, function(v,s) { return '<option value="'+v+'">'+s+'</option>' }).join()
+            let list = {}
+
+            if (app.staff) list = Object.assign(list, this.list, this.staff)
+
+            return _.map(list, function(v,s) { return '<option value="'+v+'">'+s+'</option>' }).join()
         },
         obj: function() {
-            return _.invert(this.list)
+            let list = {}
+
+            if (app.staff) list = Object.assign(list, this.list, this.staff)
+
+            return _.invert(list)
         },
 
         key: function(value) {
-            return _.invert(this.list)[value]
+            let list = {}
+
+            if (app.staff) list = Object.assign(list, this.list, this.staff)
+
+            return _.invert(list)[value]
         },
 
         list: {
@@ -18,6 +30,10 @@ define([], function() {
             'phasing': 'SAD',
             'ligand': 'Ligand binding',
             'stepped': 'Stepped transmission',
+        },
+
+        staff: {
+            'commissioning': 'Commissioning'
         }
         
     }

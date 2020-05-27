@@ -1,7 +1,7 @@
 
 
-import MarionetteView from 'vuejs/views/marionette/marionette-wrapper.vue'
-import Page from 'vuejs/views/page.vue'
+import MarionetteView from 'app/views/marionette/marionette-wrapper.vue'
+import Page from 'app/views/page.vue'
 
 const ContactList = import(/* webpackChunkName: "group-contacts" */  'modules/contact/views/contacts.js')
 const ContactView = import(/* webpackChunkName: "group-contacts" */ 'modules/contact/views/viewcontact.js')
@@ -12,7 +12,7 @@ import Contacts from 'collections/labcontacts.js'
 import Contact from 'models/labcontact.js'
 import ProposalLookup from 'models/proplookup.js'
 
-import MarionetteApplication from 'vuejs/views/marionette/singleton.js'
+import MarionetteApplication from 'app/views/marionette/singleton.js'
 
 export function routes() {
   

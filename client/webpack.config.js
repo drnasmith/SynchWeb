@@ -13,7 +13,7 @@ const config = require('./src/js/config.json')
 
 module.exports = (env, argv) => ({
   entry: {
-      main: './src/index.js',
+      main: './src/js/app/index.js',
   },
   output: {
     filename: '[name]-bundle.js',
@@ -110,7 +110,7 @@ module.exports = (env, argv) => ({
       js: path.resolve(__dirname, 'src/js'),
       css: path.resolve(__dirname, 'src/css'),
       node_modules: path.resolve(__dirname, 'node_modules'),
-      vuejs: path.resolve(__dirname, 'src/js/vuejs'),
+      // vuejs: path.resolve(__dirname, 'src/js/vuejs'),
 
     },
     modules: [

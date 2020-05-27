@@ -7,7 +7,7 @@
 
 <script>
 
-import MarionetteView from 'vuejs/views/marionette/marionette-wrapper.vue'
+import MarionetteView from 'app/views/marionette/marionette-wrapper.vue'
 
 import DCList from 'modules/dc/datacollections'
 import GenericDCList from 'modules/types/gen/dc/datacollections'

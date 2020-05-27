@@ -2,9 +2,9 @@
 // If properties need to be dynamic then use props as a function
 // Can also extract values from the route dynamically via route.params
 
-import MarionetteApplication from 'vuejs/views/marionette/singleton.js'
-import MarionetteView from 'vuejs/views/marionette/marionette-wrapper.vue'
-import Page from 'vuejs/views/page.vue'
+import MarionetteApplication from 'app/views/marionette/singleton.js'
+import MarionetteView from 'app/views/marionette/marionette-wrapper.vue'
+import Page from 'app/views/page.vue'
 import CalendarView from 'modules/calendar/views/calendar.js'
 import CurrentView from 'modules/calendar/views/current.js'
 

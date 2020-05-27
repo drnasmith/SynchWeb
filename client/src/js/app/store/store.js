@@ -1,14 +1,14 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
-import MenuStore from './store.menus.js'
+import MenuStore from './modules/store.menus.js'
 
 import Backbone from 'backbone'
 import Proposal from 'models/proposal.js'
 import Options from 'models/options.js'
 import ProposalLookup from 'models/proplookup.js'
 
-import MarionetteApplication from './js/vuejs/views/marionette/singleton.js'
+import MarionetteApplication from 'app/views/marionette/singleton.js'
 
 Vue.use(Vuex)
 
@@ -53,7 +53,7 @@ const store = new Vuex.Store({
       set_proposal(state, prop) {
         if (prop) {
           state.proposal = prop
-          sessionStorage.setItem('prop', prop)  
+          sessionStorage.setItem('prop', prop)
         } else {
           state.proposal = ''
           sessionStorage.removeItem('prop')
