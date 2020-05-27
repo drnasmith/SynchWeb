@@ -66,8 +66,9 @@ export default {
 
             this.$store.dispatch('login', credentials)
             .then(() => {
-                this.$store.dispatch('get_user')
-                this.$router.push(this.redirectUrl)
+                this.$store.dispatch('get_user').then(() => {
+                    this.$router.push(this.redirectUrl)
+                })
             })
             .catch(err => console.log(err))
 

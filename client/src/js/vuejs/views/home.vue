@@ -246,6 +246,10 @@ export default {
         let url = this.$store.getters.apiRoot + '/proposal/visits'
         this.$store.commit('set_proposal', null)
         EventBus.$emit('bcChange', [{title: '/', link: '/'}])
+
+        if (this.$store.getters.isLoggedIn) {
+            this.$router.push('current')
+        }
     },
     filters: {
         truncate: function (value) {

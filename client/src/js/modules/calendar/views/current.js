@@ -83,9 +83,16 @@ define(['marionette',
             time: 'span.time'
         },
 
+        templateHelpers: function() {
+            return {
+                IS_STAFF: app.staff,
+            }
+        },
 
         initialize: function() {
+            console.log("current.js initialize...")
             this.deferreds = []
+            console.log("...app.staff = " + app.staff)
             if (app.staff) {
                 this.next = new Visits(null)
                 this.prev = new Visits(null)

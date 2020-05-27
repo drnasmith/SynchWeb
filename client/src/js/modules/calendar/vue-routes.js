@@ -40,7 +40,7 @@ export function routes() {
         component: MarionetteView,
         props: { 
           mview: CurrentView,
-          breadcrumbs: [{ title: 'Current' }]
+          breadcrumbs: [{ title: 'Next and previous visits' }]
         }
       },
       {
@@ -51,12 +51,9 @@ export function routes() {
             path: '',
             name: 'cal',
             component: MarionetteView,
-            props: route => ({ 
-              mview: CalendarView, 
-              options: {
-                all: 1
-              }
-            })
+            props: { 
+              mview: CalendarView,
+            }
           },
           {
             path: 'bl/:bl',

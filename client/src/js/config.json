@@ -20,5 +20,7 @@
 	"maintenance_message": "This is the maintenance message",
 	"maintenance": false,
 	
-	"ga_ident": false
+	"ga_ident": false,
+
+	"valid_samples": true
 }

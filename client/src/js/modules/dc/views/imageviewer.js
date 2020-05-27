@@ -22,7 +22,15 @@ define(['jquery', 'marionette',
         
         templateHelpers: function() {
             return {
-                VIS_LINK: app.prop+'-'+this.model.get('VN')
+                VIS_LINK: app.prop+'-'+this.model.get('VN'),
+                DIR: this.model.get('DIR'),
+                NI: this.model.get('NI'),
+                FILETEMPLATE: this.model.get('FILETEMPLATE'),
+                EXPOSURETIME: this.model.get('EXPOSURETIME'),
+                TRANSMISSION: this.model.get('TRANSMISSION'),
+                RESOLUTION: this.model.get('RESOLUTION'),
+                WAVELENGTH: this.model.get('WAVELENGTH'),
+                AXISRANGE: this.model.get('AXISRANGE'),
             }
         },
         

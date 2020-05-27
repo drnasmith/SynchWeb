@@ -139,7 +139,17 @@ define(['marionette', 'backgrid',
                     var t = _.isFunction(temp) ? temp : _.template(temp)
 
                     var data = _.extend({}, this.model.toJSON(), { APIURL: app.apiurl })
-                    this.$el.html(t(data))
+                    console.log(JSON.stringify(data))
+                    console.log(t)
+                    console.log(this.column.get('template'))
+
+                    try {
+                        var result = t(data)
+                        this.$el.html(result)
+                    } catch (e) {
+                        console.log("Error with template: " + e)
+                    }
+                    // this.$el.html(t(data))
                 }
                 
                 this.delegateEvents();

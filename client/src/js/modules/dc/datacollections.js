@@ -113,6 +113,7 @@ function(Marionette, Pages, DCListView,
     
     templateHelpers: function() {
         return {
+            IS_STAFF: app.staff,
             IS_VISIT: !(!this.getOption('params').visit),
             IS_SAMPLE: !(!this.getOption('params').sid),
             IS_SINGLE: !(!this.getOption('params').id),
@@ -126,6 +127,8 @@ function(Marionette, Pages, DCListView,
                 if (vis.search('cm') == -1 && vis.search('nt') == -1 && vis.search('nr') == -1) options.collection.stop()
             } else options.collection.stop()
         }
+        console.log("DC OPTIONS PASSED IN: ")
+        console.log(options)
 
         this.dclist = new (this.getOption('dcListView'))({ collection: options.collection, params: options.params, model: this.model })
         this.paginator = new Pages({ collection: options.collection, noUrl: options.noPageUrl })

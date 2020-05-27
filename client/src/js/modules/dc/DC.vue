@@ -1,15 +1,5 @@
 <template>
     <section>
-        <h1>Data Collection View</h1>
-        <p>{{$route.path}}</p>
-        <p>Visit: {{visit}}</p>
-        <p>Id: {{id}}</p>
-        <p>page: {{page}}</p>
-        <p>ty: {{ty}}</p>
-        <p>dcg: {{dcg}}</p>
-        <p>Search: {{search}}</p>
-        <p>Loaded: {{loaded}}</p>
-
         <marionette-view :key="$route.fullPath" v-if="loaded" :options="options" :fetchOnLoad="true" :mview="mview" :breadcrumbs="bc"></marionette-view>
         <p v-if="loaded">DC View initialisation finished</p>
     </section>
@@ -67,12 +57,6 @@ export default {
             collection: null,
             params: null,
             bc : [{ title: 'Data Collections', url: '/dc' }]
-        }
-    },
-    watch: {
-        $route(to, from) {
-            // Reload if our route changes
-            console.log("DC Route has changed..." + to.path)
         }
     },
     computed: {
@@ -146,24 +130,6 @@ export default {
 
             })
         },
-
-        getOptions: function() {
-            console.log("DC Option Params = " + JSON.stringify({ visit: this.visit, search: this.search, type: this.type, id: this.id, dcg: this.dcg }))
-            return {
-                collection: new DCCol(null, {
-                        state: { currentPage: this.page ? parseInt(this.page) : 1, pageSize: app.mobile() ? 5 : 15},
-                        queryParams: { visit: this.visit, s: this.search, t: this.type, id: this.id, dcg: this.dcg, PROCESSINGJOBID: this.pjid }
-                    }),
-                model: this.model,
-                params: { visit: this.visit, search: this.search, type: this.type, id: this.id, dcg: this.dcg }
-            }
-        },
     },
-    beforeRouteEnter: function(to, from, next) {
-        console.log("DC View Before Enter In Component guard")
-        console.log("DC View Before Route Enter " + JSON.stringify(to.params))
-        // next(vm => vm.lookupView())
-        next()
-    }
 }
 </script>

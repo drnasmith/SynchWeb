@@ -106,8 +106,6 @@ export default {
           self.bc = payload
         }
       })
-
-      var menus = this.$store.getters['getMenu']
     },
     mounted: function () {
       console.log("APP.vue Mounted")
@@ -115,7 +113,8 @@ export default {
     methods: {
       getMenuType: function(menuType) {
         var menu = []
-        var legacyMenu = this.$store.getters['getMenu'][menuType]
+        // On logout we seem to lose the getMenus getter...?
+        var legacyMenu = this.$store.getters['getMenu'] ? this.$store.getters['getMenu'][menuType] : null
         
         if (legacyMenu) {
           if (menuType === 'admin') {

@@ -42,7 +42,7 @@ application.on('rcontainer:show', function(crid) {
     application.navigate('/containers/registry/'+crid)
 })
 
-var bc = { title: 'Shipments', url: '/shipments' }
+let bc = { title: 'Shipments', url: '/shipments' }
 
 
 var routes = [

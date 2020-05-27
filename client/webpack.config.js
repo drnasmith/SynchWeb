@@ -104,7 +104,7 @@ module.exports = (env, argv) => ({
       'highmaps-world': '@highcharts/map-collection/custom/world',
 
       // Vue packages from npm (vee-validate requires promise polyfill - also npm)
-      vue: 'vue/dist/vue.min',
+      vue: 'vue/dist/vue',
       veevalidate: 'vee-validate/dist/vee-validate.min',
 
       js: path.resolve(__dirname, 'src/js'),

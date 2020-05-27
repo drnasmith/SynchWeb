@@ -1,0 +1,143 @@
+Converting SynchWeb into a Vue App
+
+General fixes
+Replace app.staff in templates for modules/calendar/current.js current.html
+Replace app.staff in templates for modules/dc/datacollections.js dclist.html
+
+
+Currently we have a method to inject vue components into the client application. 
+This works through a Marionette wrapper class that renders a vue component.
+Switching to use vue as the main application allows us to expand the range of components rendered by vue by using a router component directly.
+It also makes it easier to implement updates to core elements such as menu bars, notifications etc. and include a langing page.
+
+The process to convert is relatively straight forward but requires keeping a number of global properties up to date.
+
+1. Create the main app and common components
+This includes:
+- Header
+- Sidebar/Navbar
+- Breadcrumbs
+- Footer
+
+2. Create a vuex store to manage the state of the application
+There is not much state in the app. 
+Using a store will allow us a flexible method to extend the state if required.
+The current app stores the following properties on the global 'app' object
+prop - proposal
+token - jwt token for authorisation
+user - fedid of the user (not used anywhere in the app)
+type - default type for this user (mx, em etc.)
+staff - flag to indicate this is a staff user
+personid - the ispyb primary key for this user
+givenname - the first name of the user (not used anywhere in the app)
+
+There is also a method defined to determine if a user can perform certain functions based on a permissions response
+
+Mutations
+Setting the value of state in vuex store is handled via mutation methods.
+In this case we use the mutation methods to update the vuex state and keep the app object values in sync.
+This means that marionette views can access the old values directly app.xxx for compatibility.
+
+Vuex => app mapping
+apiRoot => app.apiurl
+proposal => app.prop
+proposalType => app.type
+token => app.token
+user.username => app.user
+user.isStaff => app.staff
+user.personid => app.personid
+user.defaultType => app.type
+
+
+Actions
+Actions are asynchronous methods that require retrieving values from the server.
+initialise - retrieve initial values of prop and token from sessionStorage
+login - authenticate with the server
+logout - unset any token, user info
+getuser - retrieve information about the user such as staff, permissions etc.
+
+login and getuser return promises so we can wait until they complete (succeed or fail) before taking action
+
+Getters
+Getters provide read only access to state.
+Used directly in Vue components but also within mapped functions from the app object
+
+3. Create a vue-router to handle navigation
+Vue router combines the current router and controller behaviour.
+The router includes navigation guards that can be triggered for:
+- every route (to check authentication),
+- on a per route basis to request some pre-requisitie information from a server e.g. proposal lookup
+- within a component - to prefetch data
+
+Each module will require a new routes file to handle any controller logic and export a routes list for including in the main router.
+
+4. Map Marionette views into a Vue wrapper
+This is the opposite of the current vuewrapper. 
+It is a Vue component that renders a marionette view within its template.
+It takes a marionette view as a prop along with any options and parameters.
+If a model or collection is passed in as an option it prefetches the data (replicating a common pattern in use now)
+
+
+5. Initialisation and function mapping
+Possibly the trickiest part.
+We need to handle the case that a user types in an address in the browser or opens up the main root url
+It seems that the router may be triggered prior to the main index/App has initialised.
+Normally this is probably not an issue but the marionette app needs to be in place before we navigate to a page.
+Initialising the marionette app from index.js did not work as the store and router both need access to it.
+So in the import code for the store, we initialise store mapping methods and in the router we do the same thing.
+
+
+A solution that works is to use a singleton to wrap the main Marionette application. 
+Only one instance of the app is then created.
+The next challenge is to map app functions that affect state into their store methods and likewise for router.
+The solution proposed is similar to how the current process works. 
+Because we are using javascript, functions are added to the app object directly.
+In our refactor, we use the same process but the implemntation of these functions calls the vuex store instance.
+app.login => store.commit('login',...)
+app.alert => store.commit('add_notification',...)
+
+6. Module migration
+
+Here there are a couple of patterns that we need to address. 
+Simple case is that a Marionette view is rendered with some route parameters passed in.
+Second case a collection or model is fetched prior to routing. 
+    We handle this is an incomponent guard to ensure data fetching occurs before the component is rendered
+Third case is some lookup is completed before navigation e.g. Proposal lookup.
+    Here we can use the route guard to grab any data from the server. Then set prop values
+If common props are used based on the route object we can use a function to determine the righ props to pass.
+
+admin - Done
+assign
+blstats
+calendar - done 
+cell
+contact - done
+dc:
+ - lots of optional parameters
+ - page in URL probably not required as its not added to the url on pagination
+ - apstatus summary and summary nearly identical - should apstatussummary use ty params ?
+ - Add use of templateHelper for IS_STAFF - check still required...
+
+docs - done
+fault
+feedback
+imaging
+mc
+projects
+proposal - done
+samples
+shipment
+stats
+status
+types - Not a module with controller/router
+
+TODO:
+Figure out webpack import rules
+Structure store to use auth module
+Copy modules across - DONE
+Implement user_can method for permissions
+Import all different module types for menus
+Check app.triggerMethod
+Test use of Vue embedded within Marionette View - DONE looks OK
+Check tailwind branch for css fixes.
+Move vue pages into separate routes for clearer testing

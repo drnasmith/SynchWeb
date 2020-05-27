@@ -78,7 +78,7 @@ function lookupVisit(visit) {
 // Capturing multiple string type optional parameters is not as useful with vue-router than it was with marionette.
 // The path-to-regexp greedily matches text so optional paths can get merged. Using explicit regex conditions is more reliable.
 // Looks as though page is a red herring as its not added to the URL on pagination.
-// Search probably has no value with an id (i.e. individual data collection ) or probably dcg either
+// Search probably has no value with an id (i.e. individual data collection ) or probably dcg either.
 // The DC component handles the prefetching and proposal lookup in a cleaner method than using marionette wrapper directly
 let routes = [
   {
