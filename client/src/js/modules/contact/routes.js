@@ -14,16 +14,14 @@ import ProposalLookup from 'models/proplookup.js'
 
 import MarionetteApplication from 'app/views/marionette/singleton.js'
 
-export function routes() {
-  
-  // Root breadcrumbs for these routes
-  const bc = { title: 'Home Lab Contacts', url: '/contacts' }
+// Root breadcrumbs for these routes
+const bc = { title: 'Home Lab Contacts', url: '/contacts' }
 
-  // Initialize MarionetteApplication if not already existing
-  let application = MarionetteApplication.getInstance()
+// Initialize MarionetteApplication if not already existing
+let application = MarionetteApplication.getInstance()
 
-  console.log("LOADING LEGACY CONTACT ROUTES")
 
+app.addInitializer(function() {
     application.on('contact:show', function(cid) {
       console.log("Show contact")
       application.navigate('/contacts/cid/'+cid)
@@ -35,7 +33,9 @@ export function routes() {
       application.navigate('/contacts/user/'+uid)
       // controller.edit_user(uid)
   })
-  return routes = [
+})
+
+const routes = [
   {
     path: '/contacts',
     component: Page,
@@ -67,7 +67,7 @@ export function routes() {
           // Call the loading state here because we are finding the proposal based on this contact id
           // Prop lookup sets the proposal and type via set app.cookie method which we mapped to the store
           app.loading()
-          console.log("Contact View proposal Lookup ... beforeEnter prop: " + app.prop + ", to: " + to.path + " cid=" + to.params.cid)
+
           var lookup = new ProposalLookup({ field: 'LABCONTACTID', value: to.params.cid })
           lookup.find({
             // If OK trigger next 
@@ -103,18 +103,6 @@ export function routes() {
       },
     ]
   },
-  // {
-  //   path: 'page/:page',
-  //   component: MarionetteView,
-  //   props: route => ({ 
-  //     mview: ContactsView, 
-  //     params: {
-  //       page: route.params.page
-  //     }
-  //   })
-  // },    
-  ]
-}
+]
 
-// export default {foo}
-// export legacyRoutes
+export default routes

@@ -17,21 +17,23 @@ import Visit from 'models/visit'
 import VisitView from 'modules/admin/views/visitview'
 import AddVisit from 'modules/admin/views/addvisit'
 
-app.on('group:show', function(gid) {
-    app.navigate('/admin/groups/'+gid)
-    // controller.viewGroup(gid)
-})
 
-app.on('proposal:show', function(proposal) {
-    app.navigate('/admin/proposals/'+proposal)
-    // controller.viewProposal(proposal)
-})
+app.addInitializer(function() {
+    app.on('group:show', function(gid) {
+        app.navigate('/admin/groups/'+gid)
+        // controller.viewGroup(gid)
+    })
 
-app.on('visit:show', function(visit) {
-    app.navigate('/admin/proposals/visit/'+visit)
-    // controller.viewVisit(visit)
-})
+    app.on('proposal:show', function(proposal) {
+        app.navigate('/admin/proposals/'+proposal)
+        // controller.viewProposal(proposal)
+    })
 
+    app.on('visit:show', function(visit) {
+        app.navigate('/admin/proposals/visit/'+visit)
+        // controller.viewVisit(visit)
+    })
+})
 let bc = { title: 'Manage Groups & Permissions', url: '/admin/groups' }
 let bc2 = { title: 'Manage Proposals & Visits', url: '/admin/proposals' }
 
@@ -56,7 +58,7 @@ function lookupProposal(params) {
     })
 }
 
-let routes = [
+const routes = [
     {
         path: '/admin/groups',
         component: Page,

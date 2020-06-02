@@ -13,12 +13,12 @@ import Visits from 'collections/visits.js'
 // Need to extend this to deal with visit links for saxs, gen
 
 
-export function routes() {
-  // Initialize MarionetteApplication if not already existing
-  let application = MarionetteApplication.getInstance()
+// Initialize MarionetteApplication if not already existing
+let application = MarionetteApplication.getInstance()
 
-  console.log("LOADING LEGACY PROPOSAL ROUTES")
+console.log("LOADING LEGACY PROPOSAL ROUTES")
 
+app.addInitializer(function() {
   application.on('proposals:show', function() {
     console.log("Caught proposals:show event")
     application.navigate('/proposal')
@@ -30,36 +30,37 @@ export function routes() {
     application.navigate('/visits')
       // controller.visit_list()
   })
+})
 
-  // Determine the correct visit link list to display
-  function getVisitProps (route) {
-    console.log("Proposal::vue-routes - getVisitProps")
-    // The only difference is which action buttons are displayed
-    // Could move to the visit list view rather than this somewhat complex approach
-    var views = {
-      saxs: SAXSVisitList,
-      mx: VisitList,
-    }
-  
-    // var ty = application.proposal && application.proposal.get('TYPE')
-    var ty = application.proposal && application.type
-
-    var view = GenVisitList
-
-    if (ty in views) view = views[ty]
-    else view = GenVisitList
-
-    return {
-      mview: view,
-      breadcrumbs: [{title: 'Proposals', url: '/proposals'}, {title: 'Visits for ' + application.prop}],
-      options: {
-        collection: new Visits(null, { state: { currentPage: route.params.page ? parseInt(route.params.page) : 1}}),
-        params: {s: route.params.s}
-      },
-    }
+// Determine the correct visit link list to display
+function getVisitProps (route) {
+  console.log("Proposal::vue-routes - getVisitProps")
+  // The only difference is which action buttons are displayed
+  // Could move to the visit list view rather than this somewhat complex approach
+  var views = {
+    saxs: SAXSVisitList,
+    mx: VisitList,
   }
 
-  return routes = [
+  // var ty = application.proposal && application.proposal.get('TYPE')
+  var ty = application.proposal && application.type
+
+  var view = GenVisitList
+
+  if (ty in views) view = views[ty]
+  else view = GenVisitList
+
+  return {
+    mview: view,
+    breadcrumbs: [{title: 'Proposals', url: '/proposals'}, {title: 'Visits for ' + application.prop}],
+    options: {
+      collection: new Visits(null, { state: { currentPage: route.params.page ? parseInt(route.params.page) : 1}}),
+      params: {s: route.params.s}
+    },
+  }
+}
+
+const routes = [
   {
     path: '/proposals',
     component: Page,
@@ -141,6 +142,6 @@ export function routes() {
       },  
     ]
   },
-  ]
-}
+]
 
+export default routes

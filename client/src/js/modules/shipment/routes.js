@@ -22,30 +22,32 @@ let application = MarionetteApplication.getInstance()
 
 console.log("LOADING LEGACY SHIPMENT ROUTES")
 
-application.on('shipments:show', function() {
-    application.navigate('/shipments')
-})
-    
-application.on('shipment:show', function(sid) {
-    application.navigate('/shipments/sid/'+sid)
-})
-    
-application.on('container:show', function(cid, iid, sid) {
-    application.navigate('/containers/cid/'+cid+(iid?'/iid/'+iid:'')+(sid?'/sid/'+sid:''))
-})
+app.addInitializer(function() {
+  application.on('shipments:show', function() {
+      application.navigate('/shipments')
+  })
+      
+  application.on('shipment:show', function(sid) {
+      application.navigate('/shipments/sid/'+sid)
+  })
+      
+  application.on('container:show', function(cid, iid, sid) {
+      application.navigate('/containers/cid/'+cid+(iid?'/iid/'+iid:'')+(sid?'/sid/'+sid:''))
+  })
 
-application.on('rdewar:show', function(fc) {
-    application.navigate('/dewars/fc/'+fc)
-})
+  application.on('rdewar:show', function(fc) {
+      application.navigate('/dewars/fc/'+fc)
+  })
 
-application.on('rcontainer:show', function(crid) {
-    application.navigate('/containers/registry/'+crid)
+  application.on('rcontainer:show', function(crid) {
+      application.navigate('/containers/registry/'+crid)
+  })
 })
 
 let bc = { title: 'Shipments', url: '/shipments' }
 
 
-var routes = [
+const routes = [
   {
     path: '/shipments',
     component: Page,

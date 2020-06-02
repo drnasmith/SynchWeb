@@ -1,3 +1,12 @@
+/*
+* This is the main router using vue-router
+*
+* Core routes are added first, then we load other modules getting their routes array.
+* Routes should be specified in a modules/<name>/routes.js file.
+* In principle we could automatically add these routes for each modules, however we may want to configure them manually.
+* Dynamic loading modules can be done using syntax like:
+* const Feedback = () => import(/* webpackChunkName: "group-feedback" *\/ 'app/views/feedback/feedback.vue')
+*/
 import Vue from 'vue'
 import Router from 'vue-router'
 import store from '../store/store.js'
@@ -17,17 +26,19 @@ import Dewars from 'app/views/registeredDewars.vue'
 const Feedback = () => import(/* webpackChunkName: "group-feedback" */ 'app/views/feedback/feedback.vue')
 
 import VShipmentRoutes from 'app/views/shipment/routes.js'
-import ContactRoutes from 'app/views/contacts/routes.js'
-import {routes as CalendarRoutes} from 'modules/calendar/vue-routes.js'
+import VContactRoutes from 'app/views/contacts/routes.js'
+import CalendarRoutes from 'modules/calendar/routes.js'
 
-import {routes as LegacyRoutes} from 'modules/contact/vue-routes.js'
-import {routes as ProposalRoutes} from 'modules/proposal/vue-routes.js'
-import {routes as TutorialRoutes} from 'modules/docs/vue-routes.js'
+import ContactRoutes from 'modules/contact/routes.js'
+import ProposalRoutes from 'modules/proposal/routes.js'
+import TutorialRoutes from 'modules/docs/routes.js'
 
 import FeedbackRoutes from 'modules/feedback/routes.js'
-import ShipmentRoutes from 'modules/shipment/vue-routes.js'
+import ShipmentRoutes from 'modules/shipment/routes.js'
 import AdminRoutes from 'modules/admin/routes.js'
 import DCRoutes from 'modules/dc/routes.js'
+import StatsRoutes from 'modules/blstats/routes.js'
+import ProjectRoutes from 'modules/projects/routes.js'
 
 
 Vue.use(Router)
@@ -51,7 +62,7 @@ let routes = [
   },
   {
     path: '/nopage',
-    name: 'nothing',
+    name: 'nopage',
     component: NoPage,
     props: route => ({url: route.query.url})
   },
@@ -93,24 +104,29 @@ let asyncRoutes = [
     component: Feedback,
   },
 ]
-console.log("ROUTER IMPORTED")
 
+// Loading all the modules routes
 router.addRoutes(asyncRoutes)
 router.addRoutes(VShipmentRoutes)
 router.addRoutes(ContactRoutes)
-router.addRoutes(CalendarRoutes())
-router.addRoutes(LegacyRoutes())
-router.addRoutes(ProposalRoutes())
-router.addRoutes(TutorialRoutes())
+router.addRoutes(CalendarRoutes)
+router.addRoutes(ContactRoutes)
+router.addRoutes(ProposalRoutes)
+router.addRoutes(TutorialRoutes)
 router.addRoutes(FeedbackRoutes)
 router.addRoutes(ShipmentRoutes)
 router.addRoutes(DCRoutes)
+router.addRoutes(StatsRoutes)
+router.addRoutes(ProjectRoutes)
 router.addRoutes(AdminRoutes)
 
+// Hook the marionette navigation methods into vue-router methods
 let application = MarionetteApplication.getInstance()
 
 application.initRouteMapping(router)
 
+// Function to extract the proposal from a path
+// Used when users navigate via typing in an address directly
 var parseQuery = function(path) {
   var str = path.replace(/\?/, '').split(/&/)
   var pairs = {}
@@ -125,7 +141,10 @@ var parseQuery = function(path) {
     return pairs.prop
   }
 }
-  
+
+/*
+* Main Router guard
+*/
 router.beforeEach((to, from, next) => {
   console.log("Router beforeEach " + to.path)
   if (to.matched.length === 0) { next('/nopage?url='+to.fullPath); return }

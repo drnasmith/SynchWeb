@@ -1,5 +1,5 @@
 import DC from 'modules/dc/DC.vue'
-import Debug from 'app/views/Debug.vue'
+import Debug from 'app/views/debug.vue'
 
 import MarionetteView from 'app/views/marionette/marionette-wrapper.vue'
 import MarionetteApplication from 'app/views/marionette/singleton.js'
