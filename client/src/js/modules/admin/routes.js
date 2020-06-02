@@ -73,7 +73,7 @@ const routes = [
                 }),
             },
             {
-                path: '/:gid',
+                path: ':gid',
                 name: 'admin-view-group',
                 component: MarionetteView,
                 props: route => ({
