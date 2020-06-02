@@ -35,3 +35,7 @@ const vm = new Vue({
   },
 }).$mount('#synchweb-app')
 
+// For testing purposes....
+if (window.Cypress) {
+  window.vm = vm
+}
