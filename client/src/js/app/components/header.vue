@@ -63,14 +63,15 @@ export default {
         isStaff : function(){ return this.$store.getters.isStaff},
         currentProposal : function(){ return this.$store.getters.currentProposal},
         loginUrl: function() {
-          return this.$store.sso ? 'https://cas/cas/login?service=http://192.168.33.10:9000/current' : '/login'
-        }
+          return this.$store.sso ? this.$store.sso_url + '/cas/login?service=http://192.168.33.10:9000/current' : '/login'
+        },
     },
     methods: {
       logout: function () {
         this.$store.dispatch('logout')
         .then(() => {
-          this.$router.push('/')
+          if (this.$store.sso) this.$router.replace(this.$store.sso_url+'/cas/logout')
+          else this.$router.push('/')
         })
       },
       showSidebar: function() {
