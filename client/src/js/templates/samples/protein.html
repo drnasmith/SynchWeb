@@ -2,6 +2,10 @@
 
 <p class="help">This page shows details for the selected protein and a list of samples which make use of it</p>
 
+<% if (EXTERNAL != 0) { %>
+<a class="button" href="/proteins/clone/pid/<%-PROTEINID%>">Clone Protein</a>
+
+<% } %>
 <div class="form">
     <ul>
         <li>

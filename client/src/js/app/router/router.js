@@ -18,12 +18,12 @@ import Login from 'app/views/login.vue'
 import Visits from 'app/views/visits.vue'
 import NoPage from 'app/views/nopage.vue'
 import Proposals from 'app/views/proposals.vue'
-import Proteins from 'app/views/proteins.vue'
 import Dewars from 'app/views/registeredDewars.vue'
 // import Feedback from 'app/views/feedback/feedback.vue'
 
 // How you can dynamically import a child component
 const Feedback = () => import(/* webpackChunkName: "group-feedback" */ 'app/views/feedback/feedback.vue')
+const Proteins = () => import(/* webpackChunkName: "group-proteins" */ 'app/views/proteins.vue')
 
 import VShipmentRoutes from 'app/views/shipment/routes.js'
 import VContactRoutes from 'app/views/contacts/routes.js'
@@ -39,6 +39,7 @@ import AdminRoutes from 'modules/admin/routes.js'
 import DCRoutes from 'modules/dc/routes.js'
 import StatsRoutes from 'modules/blstats/routes.js'
 import ProjectRoutes from 'modules/projects/routes.js'
+import SampleRoutes from 'modules/samples/routes.js'
 
 
 Vue.use(Router)
@@ -89,7 +90,7 @@ let asyncRoutes = [
       }
   },
   {
-    path: '/proteins',
+    path: '/vproteins',
     name: 'proteins',
     component: Proteins,
   },
@@ -108,6 +109,7 @@ let asyncRoutes = [
 // Loading all the modules routes
 router.addRoutes(asyncRoutes)
 router.addRoutes(VShipmentRoutes)
+router.addRoutes(AdminRoutes)
 router.addRoutes(ContactRoutes)
 router.addRoutes(CalendarRoutes)
 router.addRoutes(ContactRoutes)
@@ -118,7 +120,7 @@ router.addRoutes(ShipmentRoutes)
 router.addRoutes(DCRoutes)
 router.addRoutes(StatsRoutes)
 router.addRoutes(ProjectRoutes)
-router.addRoutes(AdminRoutes)
+router.addRoutes(SampleRoutes)
 
 // Hook the marionette navigation methods into vue-router methods
 let application = MarionetteApplication.getInstance()

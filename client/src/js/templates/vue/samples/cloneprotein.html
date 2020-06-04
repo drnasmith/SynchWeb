@@ -1,0 +1,54 @@
+<section class="content">
+    <h1>Clone Protein</h1>
+
+    <p class="help">This page is for cloning all details of this protein. Set a new acronym to save the cloned protein</p>
+
+    <form novalidate v-bind:class="{loading: isLoading}">
+
+        <div class="form">
+            <ul>
+                <li>
+                    <span class="label">Name</span>
+                    <span class="NAME">{{clonedModel.get('NAME')}}</span>
+                </li>
+                
+                <li>
+                    <span class="label">Acronym</span>
+                    <span class="ACRONYM">{{clonedModel.get('ACRONYM')}}</span>
+                </li>
+                
+                <li>
+                    <span class="label">Molecular Mass</span>
+                    <span class="MOLECULARMASS">{{clonedModel.get('MOLECULARMASS')}}</span>
+                </li>
+        
+                <li class="clearfix reorder">
+                    <div class="SEQUENCE seq text">{{clonedModel.get('SEQUENCEMD')}}</div>
+                    <span class="label">Sequence</span>
+                </li>
+                
+                <li>
+                    <span class="label">Component Type</span>
+                    <span class="COMPONENTTYPEID">{{clonedModel.get('COMPONENTTYPE')}}</span>
+                </li>
+        
+                <li>
+                    <span class="label">Concentration Unit</span>
+                    <span class="CONCENTRATIONTYPEID">{{clonedModel.get('CONCENTRATIONTYPE')}}</span>
+                </li>
+        
+                <li class="clearfix">
+                    <span class="label">
+                        Associated PDB Files<br />
+                        <a href="#" class="button add"><i class="fa fa-plus"></i> Add PDB File</a>
+                    </span>
+                    <span class="pdb floated">
+                        <ul class="visits clearfix"></ul>
+                    </span>
+                </li>
+                
+            </ul>
+            <button class="button submit" v-on:click.prevent="onSubmit">Clone</button>
+        </div>
+    </form>
+</section>

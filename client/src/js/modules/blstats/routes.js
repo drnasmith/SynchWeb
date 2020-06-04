@@ -32,6 +32,10 @@ const routes = [
         },
     ]
   },
+  {
+    path: '/stats',
+    component: Debug,
+  },
 ]
 
 export default routes

@@ -378,7 +378,7 @@ table input[type=text] {
 .form textarea {
     font-family: inherit;
     @apply tw-p-1;
-    @apply tw-bg-white tw-rounded tw-shadow tw-border;
+    @apply tw-bg-white tw-rounded tw-border tw-border-gray-500;
     /* Turn on debugging... */
     /* @apply tw-border-4 tw-border-orange-400; */
 }

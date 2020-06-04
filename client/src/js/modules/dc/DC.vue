@@ -1,7 +1,13 @@
 <template>
     <section>
-        <marionette-view :key="$route.fullPath" v-if="loaded" :options="options" :fetchOnLoad="true" :mview="mview" :breadcrumbs="bc"></marionette-view>
-        <p v-if="loaded">DC View initialisation finished</p>
+        <marionette-view 
+            v-if="loaded" 
+            :key="$route.fullPath" 
+            :options="options" 
+            :fetchOnLoad="true" 
+            :mview="mview" 
+            :breadcrumbs="bc">
+        </marionette-view>
     </section>
 </template>
 
