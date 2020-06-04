@@ -106,38 +106,40 @@ Third case is some lookup is completed before navigation e.g. Proposal lookup.
     Here we can use the route guard to grab any data from the server. Then set prop values
 If common props are used based on the route object we can use a function to determine the righ props to pass.
 
-admin - Done
+admin - done
 assign
-blstats
+blstats - done
 calendar - done 
 cell
 contact - done
 dc:
+ - tricky one!
  - lots of optional parameters
  - page in URL probably not required as its not added to the url on pagination
  - apstatus summary and summary nearly identical - should apstatussummary use ty params ?
  - Add use of templateHelper for IS_STAFF - check still required...
-
+ - more or less working with wrapper component - not all breadcrumb options used though. Need better pattern for that.
 docs - done
 fault
-feedback
+feedback - done
 imaging
 mc
-projects
+projects - done
 proposal - done
-samples
-shipment
+samples - in progress (tricky!)
+shipment - in progress
 stats
 status
 types - Not a module with controller/router
 
 TODO:
 Figure out webpack import rules
-Structure store to use auth module
+Structure store to use auth module - DONE
 Copy modules across - DONE
 Implement user_can method for permissions
+Check which routes are protected and use router guards
 Import all different module types for menus
 Check app.triggerMethod
-Test use of Vue embedded within Marionette View - DONE looks OK
+Test use of Vue embedded within Marionette View - DONE looks OK - simplesamplepopup needs checking
 Check tailwind branch for css fixes.
 Move vue pages into separate routes for clearer testing
