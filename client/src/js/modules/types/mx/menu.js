@@ -1,8 +1,9 @@
 define([], function() {
-    
+
     return {
         menu: {
             dc: 'View All Data',
+            samplegroups: 'Sample Groups',
             visits: 'Visits',
             calendar: 'Calendar',
             assign: 'Assign Containers',
@@ -16,12 +17,12 @@ define([], function() {
             stats: 'Statistics',
             migrate: 'Migrate',
         },
-        
+
         extra: {
             projects: 'Projects',
             cell: 'Unit Cell Search',
         },
-        
+
         admin: {
             'stats/overview/beamlines': { title: 'Reporting', icon: 'fa-line-chart', permission: 'all_prop_stats' },
             'admin/imaging': { title: 'Imaging', icon: 'fa-image', permission: 'imaging_dash' },
@@ -30,5 +31,5 @@ define([], function() {
             faults: { title: 'Fault Reports', icon: 'fa-tasks' },
         },
     }
-    
+
 })

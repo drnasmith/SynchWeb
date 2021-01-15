@@ -15,11 +15,13 @@ const CrystalListWrapper = () => import(/* webpackChunkName: "samples" */ 'modul
 const CrystalViewWrapper = () => import(/* webpackChunkName: "samples" */ 'modules/samples/components/CrystalViewWrapper.vue')
 const CrystalAddWrapper = () => import(/* webpackChunkName: "samples" */ 'modules/samples/components/CrystalAddWrapper.vue')
 
+const SampleGroups = () => import(/* webpackChunkName: "samples" */ 'modules/samples/components/SampleGroups.vue')
+
 app.addInitializer(function() {
   app.on('samples:show', function() {
     app.navigate('/samples')
   })
-    
+
   app.on('proteins:show', function() {
     app.navigate('/proteins')
   })
@@ -39,7 +41,7 @@ app.addInitializer(function() {
   app.on('xsamples:view', function(cid) {
     app.navigate('/xsamples/cid/'+cid)
   })
-    
+
   app.on('proteins:view', function(pid) {
     app.navigate('/proteins/pid/'+pid)
   })
@@ -165,7 +167,7 @@ const routes = [
     path: '/crystals/cid/:cid',
     name: 'crystal-view',
     component: CrystalViewWrapper,
-    props: route => ({ 
+    props: route => ({
       cid: +route.params.cid
     }),
   },
@@ -189,7 +191,7 @@ const routes = [
     path: '/xsamples/cid/:cid',
     name: 'xsamples-view',
     component: CrystalViewWrapper,
-    props: route => ({ 
+    props: route => ({
       cid: +route.params.cid
     }),
   },
@@ -198,6 +200,11 @@ const routes = [
     name: 'xsamples-add',
     component: CrystalAddWrapper,
   },
+  {
+    path: '/samplegroups',
+    name: 'sample-groups',
+    component: SampleGroups,
+  }
 ]
 
 export default routes
