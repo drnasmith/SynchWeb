@@ -28,16 +28,16 @@ define(['backbone',
 
 
     return PageableCollection.extend({
-    
+
         model: SampleGroupMember,
         url: '/sample/groups',
-        
+
         mode: 'server',
-        
+
         state: {
             pageSize: 100,
         },
-        
+
         initialize: function(options) {
             this._groups = new SampleGroupCollection()
             this._groups.parent = this
@@ -63,7 +63,10 @@ define(['backbone',
 
                 groups.push({
                     BLSAMPLEGROUPID: g,
-                    MEMBERS: new SampleGroupMembers(members)
+                    MEMBERS: new SampleGroupMembers(members),
+                    NAME: members[0].get('NAME'),
+                    COUNT: members.length
+
                 })
             }, this)
 
@@ -73,12 +76,12 @@ define(['backbone',
 
         groups: function() {
             return this._groups
-        }, 
+        },
 
         parseRecords: function(r, options) {
             return r.data
         },
-        
+
         parseState: function(r, q, state, options) {
             return { totalRecords: r.total }
         },
