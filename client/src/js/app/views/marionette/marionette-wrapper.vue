@@ -155,7 +155,7 @@ export default {
         fetchCollection: function(collection, queryParams) {
             return new Promise((resolve, reject) => {
                 // If we have no collection return immediately
-                if (!collection) { resolve() }
+                if (!collection) { resolve(); return }
 
                 this.$store.commit('loading', true)
                 // We want to access 'this' from within the backbone callback
